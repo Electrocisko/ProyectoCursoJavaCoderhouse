@@ -1,24 +1,23 @@
 package com.facturacion.ecommerce.persistence.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-public class Invoice {
+public class InvoiceModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    private Client client;
+    private ClientModel client;
 
     @Column(name = "created_at")
     private String created;
 
     private double total;
 
-    public Invoice() {
+    public InvoiceModel() {
     }
 
     public int getId() {
@@ -29,11 +28,11 @@ public class Invoice {
         this.id = id;
     }
 
-    public Client getClient() {
+    public ClientModel getClient() {
         return client;
     }
 
-    public void setClient(Client client) {
+    public void setClient(ClientModel client) {
         this.client = client;
     }
 

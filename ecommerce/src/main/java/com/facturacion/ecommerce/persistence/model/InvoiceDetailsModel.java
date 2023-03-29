@@ -1,26 +1,25 @@
 package com.facturacion.ecommerce.persistence.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "invoice_details")
-public class InvoiceDetails {
+public class InvoiceDetailsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int invoice_detail_id;
 
     @ManyToOne
-    private Invoice invoice;
+    private InvoiceModel invoiceModel;
 
     @ManyToOne
-    private Product product;
+    private ProductModel productModel;
 
     private int amount;
 
     private double price;
 
-    public InvoiceDetails() {
+    public InvoiceDetailsModel() {
     }
 
     public int getInvoice_detail_id() {
@@ -47,28 +46,28 @@ public class InvoiceDetails {
         this.price = price;
     }
 
-    public Invoice getInvoice() {
-        return invoice;
+    public InvoiceModel getInvoice() {
+        return invoiceModel;
     }
 
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
+    public void setInvoice(InvoiceModel invoiceModel) {
+        this.invoiceModel = invoiceModel;
     }
 
-    public Product getProduct() {
-        return product;
+    public ProductModel getProduct() {
+        return productModel;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProduct(ProductModel productModel) {
+        this.productModel = productModel;
     }
 
     @Override
     public String toString() {
         return "InvoiceDetails{" +
                 "invoice_detail_id=" + invoice_detail_id +
-                ", invoice=" + invoice +
-                ", product=" + product +
+                ", invoice=" + invoiceModel +
+                ", product=" + productModel +
                 ", amount=" + amount +
                 ", price=" + price +
                 '}';

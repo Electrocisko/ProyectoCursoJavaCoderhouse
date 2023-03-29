@@ -4,10 +4,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "clients")
-public class Client {
+public class ClientModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
 
     private String name;
@@ -16,7 +17,7 @@ public class Client {
 
     private String docnumber;
 
-    public Client() {
+    public ClientModel() {
     }
 
     public int getId() {

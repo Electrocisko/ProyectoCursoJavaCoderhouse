@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class ProductModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -17,7 +17,7 @@ public class Product {
 
     private double price;
 
-    public Product() {
+    public ProductModel() {
     }
 
     public int getId() {
