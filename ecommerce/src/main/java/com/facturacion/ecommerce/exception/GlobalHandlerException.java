@@ -14,8 +14,20 @@ public class GlobalHandlerException {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<?> productAlreadyExistsException(Exception e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public  ResponseEntity<?> ProductNotFoundException(Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> idNotValidException(Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+
 }
