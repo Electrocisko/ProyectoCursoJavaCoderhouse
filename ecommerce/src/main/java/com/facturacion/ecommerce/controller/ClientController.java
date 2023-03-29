@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/client")
 public class ClientController {
 
     @Autowired
@@ -21,10 +21,16 @@ public class ClientController {
         return new ResponseEntity<>(this.clientService.create(newClient), HttpStatus.OK );
     }
 
-    @GetMapping(path = "/clients")
-    public ResponseEntity  <List<ClientModel>> findAll() {
+    @GetMapping(path = "/all")
+    public ResponseEntity<List<ClientModel>> findAll() {
         return new ResponseEntity<>(this.clientService.findAll(), HttpStatus.OK);
     }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<ClientModel> findById(@PathVariable Integer id) throws Exception {
+        return new ResponseEntity<>(this.clientService.findById(id), HttpStatus.OK);
+    }
+
 
 
 }
