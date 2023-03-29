@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/product")
 public class ProductController {
@@ -24,6 +26,17 @@ public class ProductController {
     public ResponseEntity<ProductModel> findById(@PathVariable Integer id) throws Exception {
     return new ResponseEntity<>(this.productService.findById(id),HttpStatus.OK );
 }
+
+@GetMapping(path = "/all")
+    public ResponseEntity<List<ProductModel>> findAll() {
+    return new ResponseEntity<>(this.productService.findAll(), HttpStatus.OK);
+}
+
+@PutMapping(path = "/update/{id}")
+    public ResponseEntity<ProductModel> update(@RequestBody ProductModel productUpdate, @PathVariable Integer id) throws Exception {
+    return new ResponseEntity<>(this.productService.update(productUpdate, id), HttpStatus.OK);
+}
+
 
 }
 
