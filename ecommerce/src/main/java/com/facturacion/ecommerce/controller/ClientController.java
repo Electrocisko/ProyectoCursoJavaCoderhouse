@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.controller;
 
+import com.facturacion.ecommerce.exception.ClientNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class ClientController {
         return new ResponseEntity<>(this.clientService.findById(id), HttpStatus.OK);
     }
 
+    @PutMapping(path = "/update/{id}")
+    public ResponseEntity<ClientModel> update(@RequestBody ClientModel clientUpdated,@PathVariable Integer id) throws Exception {
+        return new ResponseEntity<>(this.clientService.update(clientUpdated,id),HttpStatus.OK);
+    }
 
 
 }
