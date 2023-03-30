@@ -26,4 +26,14 @@ public class InvoiceController {
         return new ResponseEntity<>(this.invoiceService.findAll(),HttpStatus.OK);
     }
 
+    @GetMapping(path = "/get/{id}")
+        public ResponseEntity<InvoiceModel> findById(@PathVariable Integer id)  throws Exception{
+            return new ResponseEntity<>(this.invoiceService.findById(id),HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/update/{id}")
+    public ResponseEntity<InvoiceModel> updated(@RequestBody InvoiceModel newData,@PathVariable Integer id) throws Exception {
+        return  new ResponseEntity<>(this.invoiceService.update(newData,id), HttpStatus.OK);
+    }
+
 }

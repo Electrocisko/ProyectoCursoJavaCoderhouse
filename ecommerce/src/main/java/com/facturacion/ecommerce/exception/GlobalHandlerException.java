@@ -29,5 +29,10 @@ public class GlobalHandlerException {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvoiceNotFoundException.class)
+    public ResponseEntity<?> invoiceNotFoundException(Exception e) {
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+    }
+
 
 }
