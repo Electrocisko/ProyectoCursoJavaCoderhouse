@@ -13,7 +13,8 @@ public class InvoiceModel {
     private int id;
 
     @ManyToOne
-    private ClientModel client;
+    @JoinColumn(name = "client_id")
+    private ClientModel client_id;
 
     @Column(name = "created_at")
     private String created;
