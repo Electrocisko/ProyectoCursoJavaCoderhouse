@@ -28,13 +28,21 @@ public class InvoiceDetailsController {
     }
 
     @GetMapping(path = "/get/{id}")
-    public ResponseEntity<InvoiceDetailsModel> findById(@PathVariable Integer id) {
+    public ResponseEntity<InvoiceDetailsModel> findById(@PathVariable Integer id)
+            throws Exception {
         return new ResponseEntity<>(this.invoiceDetailsService.findById(id), HttpStatus.OK);
     }
 
     @PutMapping(path = "/updated/{id}")
-    public ResponseEntity<InvoiceDetailsModel> updated(@RequestBody InvoiceDetailsModel newData, @PathVariable Integer id){
+    public ResponseEntity<InvoiceDetailsModel> updated(@RequestBody InvoiceDetailsModel newData, @PathVariable Integer id)
+            throws Exception{
         return new ResponseEntity<>(this.invoiceDetailsService.updated(newData,id), HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public  ResponseEntity<String> deleteById(@PathVariable Integer id)
+            throws Exception{
+        return new ResponseEntity<>(this.invoiceDetailsService.deleteById(id), HttpStatus.OK);
     }
 
 

@@ -37,5 +37,9 @@ public class ClientController {
         return new ResponseEntity<>(this.clientService.update(clientUpdated,id),HttpStatus.OK);
     }
 
-
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Integer id) throws Exception {
+        return new ResponseEntity<>(this.clientService.deleteById(id), HttpStatus.OK) ;
+    }
 }
+

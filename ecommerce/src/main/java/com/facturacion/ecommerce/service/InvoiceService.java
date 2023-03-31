@@ -46,6 +46,18 @@ public class InvoiceService {
         invoiceUpdated.setTotal(newData.getTotal());
         return invoiceUpdated;
     }
+
+    public String deleteById(Integer id) throws Exception {
+        if(id <= 0) {
+            throw new Exception("the id is not valid");
+        }
+        Optional<InvoiceModel> invoiceOp = this.invoiceRepository.findById(id);
+        if (invoiceOp.isEmpty()) {
+            throw new InvoiceNotFoundException("invoice not found with this id");
+        }
+        this.invoiceRepository.deleteById(id);
+        return "Invoice Eliminado";
+    }
 }
 
 

@@ -54,4 +54,16 @@ public class ClientService {
         }
     }
 
+    public String deleteById(Integer id) throws Exception{
+        if (id <= 0){
+            throw new Exception("the id is not valid");
+        }
+        Optional<ClientModel> clientOp = this.clientRepository.findById(id);
+        if (clientOp.isEmpty()) {
+            throw new ClientNotFoundException("client not found with this id");
+        }
+         this.clientRepository.deleteById(id);
+         return "Cliente Eliminado";
+    }
+
 }

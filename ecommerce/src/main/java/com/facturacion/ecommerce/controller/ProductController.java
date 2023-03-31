@@ -37,6 +37,11 @@ public class ProductController {
     return new ResponseEntity<>(this.productService.update(productUpdate, id), HttpStatus.OK);
 }
 
+@DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Integer id) throws Exception {
+    return new ResponseEntity<>(this.productService.deleteById(id),HttpStatus.OK);
+}
+
 
 }
 

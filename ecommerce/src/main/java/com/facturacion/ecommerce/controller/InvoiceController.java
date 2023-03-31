@@ -36,4 +36,9 @@ public class InvoiceController {
         return  new ResponseEntity<>(this.invoiceService.update(newData,id), HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Integer id) throws Exception {
+        return new ResponseEntity<>(this.invoiceService.deleteById(id), HttpStatus.OK);
+    }
+
 }

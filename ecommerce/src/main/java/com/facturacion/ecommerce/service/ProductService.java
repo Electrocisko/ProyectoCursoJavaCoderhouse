@@ -53,5 +53,18 @@ public class ProductService {
 
     }
 
+    public String deleteById(Integer id) throws Exception {
+        if (id <= 0){
+            throw new Exception("the id is not valid");
+        }
+        Optional<ProductModel> productOp = this.productRepository.findById(id);
+        if (productOp.isEmpty()){
+            throw new ProductNotFoundException("The product you are trying to request does not exist");
+        }
+        this.productRepository.deleteById(id);
+        return "Producto Eliminado";
+
+    }
+
 
 }

@@ -34,5 +34,10 @@ public class GlobalHandlerException {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(InvoiceDetailsNotFoundException.class)
+    public ResponseEntity<?> nvoiceDetailsNotFoundException(Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 
 }
