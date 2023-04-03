@@ -7,7 +7,7 @@ docnumber varchar(11) UNIQUE NOT NULL
 
 CREATE TABLE invoice(
 id Integer PRIMARY KEY AUTO_INCREMENT,
-created_at varchar(12) NOT NULL,
+created_at  datetime NOT NULL,
 total double,
 client_id Integer,
 CONSTRAINT FK_CLIENT_ID FOREIGN KEY(client_id) REFERENCES clients(id)

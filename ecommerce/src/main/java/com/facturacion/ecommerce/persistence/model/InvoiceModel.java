@@ -3,6 +3,9 @@ package com.facturacion.ecommerce.persistence.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+
+
 @Data
 @Entity
 @Table(name = "invoice")
@@ -17,7 +20,7 @@ public class InvoiceModel {
     private ClientModel client_id;
 
     @Column(name = "created_at")
-    private String created;
+    private LocalDate created;
 
     private double total;
 
