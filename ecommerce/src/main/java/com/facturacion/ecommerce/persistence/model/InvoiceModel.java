@@ -1,10 +1,12 @@
 package com.facturacion.ecommerce.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-
+import java.util.List;
 
 @Data
 @Entity
@@ -22,7 +24,10 @@ public class InvoiceModel {
     @Column(name = "created_at")
     private LocalDate created;
 
-    private double total;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "invoiceModel",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<InvoiceDetailsModel> invoiceDetails;
 
+    private double total;
 
 }

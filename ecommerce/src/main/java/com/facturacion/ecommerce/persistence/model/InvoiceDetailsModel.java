@@ -1,19 +1,21 @@
 package com.facturacion.ecommerce.persistence.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
+
 @Data
 @Entity
 @Table(name = "invoice_details")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class InvoiceDetailsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int invoice_detail_id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "invoice_id")
     private InvoiceModel invoiceModel;
 
