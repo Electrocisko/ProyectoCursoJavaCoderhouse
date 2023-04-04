@@ -1,6 +1,7 @@
 package com.facturacion.ecommerce.controller;
 
 import com.facturacion.ecommerce.exception.ProductAlreadyExistsException;
+import com.facturacion.ecommerce.exception.ProductNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,14 @@ public class ProductController {
     return new ResponseEntity<>(this.productService.create(newProduct), HttpStatus.OK );
 }
 
-@GetMapping(path = "/get/{id}")
+@GetMapping(path = "/getById/{id}")
     public ResponseEntity<ProductModel> findById(@PathVariable Integer id) throws Exception {
     return new ResponseEntity<>(this.productService.findById(id),HttpStatus.OK );
+}
+
+@GetMapping(path = "/getByCode/{code}")
+public ResponseEntity<ProductModel> findByCode(@PathVariable String code) throws ProductNotFoundException {
+    return new ResponseEntity<>(this.productService.findByCode(code), HttpStatus.NOT_FOUND);
 }
 
 @GetMapping(path = "/all")

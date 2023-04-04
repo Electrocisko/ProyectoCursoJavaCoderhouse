@@ -41,6 +41,14 @@ public class ClientService {
         return clientOp.get();
     }
 
+    public ClientModel findByDocNumber(String doc) throws ClientNotFoundException {
+        Optional<ClientModel> clientOp = this.clientRepository.findByDoc(doc);
+        if (clientOp.isEmpty()) {
+            throw new ClientNotFoundException("client not found with this document number");
+        }
+        return clientOp.get();
+    }
+
     public ClientModel update(ClientModel newData, Integer id) throws Exception {
         if (id <= 0){
             throw new Exception("the id is not valid");

@@ -37,6 +37,15 @@ public class ProductService {
         }
     }
 
+    public ProductModel findByCode(String code) throws ProductNotFoundException{
+        Optional<ProductModel> productOp = this.productRepository.findByCode(code);
+        if (productOp.isEmpty()){
+            throw new ProductNotFoundException("The product you are trying to request does not exist");
+        }else {
+            return productOp.get();
+        }
+    }
+
     public List<ProductModel> findAll() {
         return this.productRepository.findAll();
     }

@@ -28,10 +28,15 @@ public class ClientController {
         return new ResponseEntity<>(this.clientService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/GetById/{id}")
     public ResponseEntity<ClientModel> findById(@PathVariable Integer id) throws Exception {
         return new ResponseEntity<>(this.clientService.findById(id), HttpStatus.OK);
     }
+
+   @GetMapping(path = "/GetByDocumentNumber/{doc}")
+   public ResponseEntity<ClientModel> findByDoc(@PathVariable String doc) throws ClientNotFoundException {
+        return new ResponseEntity<>(this.clientService.findByDocNumber(doc),HttpStatus.OK);
+   }
 
     @PutMapping(path = "/update/{id}")
     public ResponseEntity<ClientModel> update(@RequestBody ClientModel clientUpdated,@PathVariable Integer id) throws Exception {
