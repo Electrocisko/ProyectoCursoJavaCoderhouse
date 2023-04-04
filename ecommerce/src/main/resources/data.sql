@@ -1,4 +1,4 @@
-insert INTO clients(name,lastname,docnumber)
+insert INTO clients(name,lastname,doc)
 VALUES
 ('Pedro','Garcia','1234'),
 ('Pablo','Lopez','1235'),

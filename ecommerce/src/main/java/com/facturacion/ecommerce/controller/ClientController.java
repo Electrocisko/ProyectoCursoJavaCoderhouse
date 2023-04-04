@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.controller;
 
+import com.facturacion.ecommerce.exception.ClientAlreadyRegisteredException;
 import com.facturacion.ecommerce.exception.ClientNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.service.ClientService;
@@ -18,7 +19,7 @@ public class ClientController {
     private ClientService clientService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<ClientModel> create(@RequestBody ClientModel newClient) {
+    public ResponseEntity<ClientModel> create(@RequestBody ClientModel newClient) throws ClientAlreadyRegisteredException {
         return new ResponseEntity<>(this.clientService.create(newClient), HttpStatus.OK );
     }
 

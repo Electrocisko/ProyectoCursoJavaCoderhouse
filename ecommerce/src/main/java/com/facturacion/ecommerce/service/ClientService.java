@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.service;
 
+import com.facturacion.ecommerce.exception.ClientAlreadyRegisteredException;
 import com.facturacion.ecommerce.exception.ClientNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.repository.ClientRepository;
@@ -17,7 +18,11 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public ClientModel create(ClientModel newClient) {
+    public ClientModel create(ClientModel newClient) throws ClientAlreadyRegisteredException {
+        Optional<ClientModel> clientOp = this.clientRepository.findByDoc(newClient.getDoc());
+        if (clientOp.isPresent()) {
+            throw new ClientAlreadyRegisteredException("The client is already registered");
+        }
     return this.clientRepository.save(newClient);
     }
 
@@ -30,7 +35,6 @@ public class ClientService {
             throw new Exception("the id is not valid");
         }
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
-
         if (clientOp.isEmpty()){
             throw new ClientNotFoundException("client not found with this id");
         }
@@ -45,11 +49,14 @@ public class ClientService {
         if (clientOp.isEmpty()){
             throw new ClientNotFoundException("client not found with this id");
         } else {
-            log.info("entra aqui?");
+            Optional<ClientModel> clientDoc = this.clientRepository.findByDoc(newData.getDoc());
+            if (clientDoc.isPresent()){
+                throw  new ClientAlreadyRegisteredException("The client is already registered with this document");
+            }
             ClientModel clientUpdated = clientOp.get();
             clientUpdated.setName(newData.getName());
             clientUpdated.setLastname(newData.getLastname());
-            clientUpdated.setDocnumber(newData.getDocnumber());
+            clientUpdated.setDoc(newData.getDoc());
             return  this.clientRepository.save(clientUpdated);
         }
     }

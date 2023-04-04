@@ -39,5 +39,10 @@ public class GlobalHandlerException {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ClientAlreadyRegisteredException.class)
+    public  ResponseEntity<?> ClientAlreadyRegisteredException(Exception e) {
+        return  new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 
 }

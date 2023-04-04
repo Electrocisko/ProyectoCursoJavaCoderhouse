@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.service;
 
+import com.facturacion.ecommerce.exception.ProductAlreadyExistsException;
 import com.facturacion.ecommerce.exception.ProductNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.persistence.repository.ProductRepository;
@@ -15,7 +16,11 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public ProductModel create(ProductModel newProduct) {
+    public ProductModel create(ProductModel newProduct) throws ProductAlreadyExistsException {
+        Optional<ProductModel> productOp = this.productRepository.findByCode(newProduct.getCode());
+        if (productOp.isPresent()) {
+            throw new ProductAlreadyExistsException("El producto que intenta agregar ya existe en la base de datos    ");
+        }
         return this.productRepository.save(newProduct);
     }
 

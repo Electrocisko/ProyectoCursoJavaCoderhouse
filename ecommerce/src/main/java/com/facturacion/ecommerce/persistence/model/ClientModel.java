@@ -16,7 +16,7 @@ public class ClientModel {
 
     private String lastname;
 
-    private String docnumber;
+    private String doc;
 
 
 }
