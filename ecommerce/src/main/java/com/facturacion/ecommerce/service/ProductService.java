@@ -2,6 +2,7 @@ package com.facturacion.ecommerce.service;
 
 import com.facturacion.ecommerce.exception.ProductAlreadyExistsException;
 import com.facturacion.ecommerce.exception.ProductNotFoundException;
+import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.persistence.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class ProductService {
     public ProductModel create(ProductModel newProduct) throws ProductAlreadyExistsException {
         Optional<ProductModel> productOp = this.productRepository.findByCode(newProduct.getCode());
         if (productOp.isPresent()) {
-            throw new ProductAlreadyExistsException("El producto que intenta agregar ya existe en la base de datos    ");
+            throw new ProductAlreadyExistsException("The product you are trying to add already exists in the database    ");
         }
         return this.productRepository.save(newProduct);
     }
@@ -48,6 +49,13 @@ public class ProductService {
         if (productOp.isEmpty()) {
             throw new ProductNotFoundException("The product you are trying to request does not exist");
         } else {
+            if (!(newData.getCode().equals(productOp.get().getCode()))) {
+                Optional<ProductModel> prodOP = this.productRepository.findByCode(newData.getCode());
+                if (prodOP.isPresent()){
+                    throw new ProductAlreadyExistsException("the new code already exists in the database");
+                }
+            }
+
             ProductModel productUpdated = productOp.get();
             productUpdated.setDescription(newData.getDescription());
             productUpdated.setCode(newData.getCode());
