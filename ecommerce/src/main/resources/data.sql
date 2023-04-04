@@ -11,3 +11,15 @@ VALUES
 ('Camisa','CAM',10,6000),
 ('Short','SHT',8,5000),
 ('Gorro','GOR',20,3000);
+
+Insert into invoice(created_at,total,client_id)
+VALUES('202-01-01',0,1);
+
+INSERT into invoice_details(invoice_id,amount,product_id,price)
+VALUES(1,2,1,7000);
+
+INSERT into invoice_details(invoice_id,amount,product_id,price)
+VALUES(1,1,2,5300);
+
+UPDATE  INVOICE SET TOTAL=19300
+where id=1;
