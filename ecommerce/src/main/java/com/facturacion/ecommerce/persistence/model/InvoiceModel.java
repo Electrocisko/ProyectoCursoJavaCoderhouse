@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class InvoiceModel {
     private int id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "client_id")
     private ClientModel client_id;
 
