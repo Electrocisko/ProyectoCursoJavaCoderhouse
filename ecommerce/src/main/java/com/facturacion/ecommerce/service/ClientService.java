@@ -4,6 +4,7 @@ import com.facturacion.ecommerce.exception.ClientAlreadyRegisteredException;
 import com.facturacion.ecommerce.exception.ClientNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.repository.ClientRepository;
+import com.facturacion.ecommerce.validator.ClientValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     public ClientModel create(ClientModel newClient) throws ClientAlreadyRegisteredException {
+
+        ClientValidator clientValidator = new ClientValidator();
+        clientValidator.validate(newClient);
         Optional<ClientModel> clientOp = this.clientRepository.findByDoc(newClient.getDoc());
         if (clientOp.isPresent()) {
             throw new ClientAlreadyRegisteredException("The client is already registered");
