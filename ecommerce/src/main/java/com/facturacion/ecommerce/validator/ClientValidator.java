@@ -22,7 +22,6 @@ public class ClientValidator {
         this.validateStringData("doc", client.getDoc());
     }
 
-
     private void validateStringData(String attribute, String stringData) {
         if(stringData.isBlank()) {
             throw new IllegalArgumentException("El campo " + attribute + " no es valido o vacio");

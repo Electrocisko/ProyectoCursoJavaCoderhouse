@@ -19,14 +19,11 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public ClientModel create(ClientModel newClient) throws ClientAlreadyRegisteredException {
-
+    public ClientModel create(ClientModel newClient) throws ClientAlreadyRegisteredException  {
         ClientValidator clientValidator = new ClientValidator();
         clientValidator.validate(newClient);
         Optional<ClientModel> clientOp = this.clientRepository.findByDoc(newClient.getDoc());
-        if (clientOp.isPresent()) {
-            throw new ClientAlreadyRegisteredException("The client is already registered");
-        }
+        this.ClientIsPresent(clientOp,"The client is already registered");
     return this.clientRepository.save(newClient);
     }
 
@@ -39,17 +36,13 @@ public class ClientService {
             throw new Exception("the id is not valid");
         }
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
-        if (clientOp.isEmpty()){
-            throw new ClientNotFoundException("client not found with this id");
-        }
+        this.ClientIsEmpty(clientOp,"client not found with this id");
         return clientOp.get();
     }
 
     public ClientModel findByDocNumber(String doc) throws ClientNotFoundException {
         Optional<ClientModel> clientOp = this.clientRepository.findByDoc(doc);
-        if (clientOp.isEmpty()) {
-            throw new ClientNotFoundException("client not found with this document number");
-        }
+        this.ClientIsEmpty(clientOp,"client not found with this document number");
         return clientOp.get();
     }
 
@@ -62,8 +55,11 @@ public class ClientService {
             throw new ClientNotFoundException("client not found with this id");
         } else {
             Optional<ClientModel> clientDoc = this.clientRepository.findByDoc(newData.getDoc());
-            if (clientDoc.isPresent()){
-                throw  new ClientAlreadyRegisteredException("The client is already registered with this document");
+            if(!clientOp.get().getDoc().equals(newData.getDoc())) {
+                System.out.println("Los documentos  no coinciden");
+                if (clientDoc.isPresent()){
+                    throw  new ClientAlreadyRegisteredException("The client is already registered with this document");
+                }
             }
             ClientModel clientUpdated = clientOp.get();
             clientUpdated.setName(newData.getName());
@@ -83,6 +79,19 @@ public class ClientService {
         }
          this.clientRepository.deleteById(id);
          return "Cliente Eliminado";
+    }
+
+
+    public void ClientIsPresent(Optional clientOp, String message) throws ClientAlreadyRegisteredException {
+        if (clientOp.isPresent()) {
+            throw new ClientAlreadyRegisteredException(message);
+        }
+    }
+
+    public void ClientIsEmpty(Optional clientOp, String message) throws ClientNotFoundException {
+        if (clientOp.isEmpty()){
+            throw new ClientNotFoundException(message);
+        }
     }
 
 }
