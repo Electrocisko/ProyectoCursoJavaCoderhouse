@@ -32,9 +32,7 @@ public class ClientService {
     }
 
     public ClientModel findById(Integer id) throws Exception  {
-        if(id <= 0) {
-            throw new Exception("the id is not valid");
-        }
+        this.CheckId(id);
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
         this.ClientIsEmpty(clientOp,"client not found with this id");
         return clientOp.get();
@@ -47,36 +45,25 @@ public class ClientService {
     }
 
     public ClientModel update(ClientModel newData, Integer id) throws Exception {
-        if (id <= 0){
-            throw new Exception("the id is not valid");
-        }
+        this.CheckId(id);
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
-        if (clientOp.isEmpty()){
-            throw new ClientNotFoundException("client not found with this id");
-        } else {
+        this.ClientIsEmpty(clientOp,"client not found with this id");
             Optional<ClientModel> clientDoc = this.clientRepository.findByDoc(newData.getDoc());
             if(!clientOp.get().getDoc().equals(newData.getDoc())) {
-                System.out.println("Los documentos  no coinciden");
-                if (clientDoc.isPresent()){
-                    throw  new ClientAlreadyRegisteredException("The client is already registered with this document");
-                }
-            }
+                this.ClientIsPresent(clientOp,"The client is already registered whit this doc");
+          }
             ClientModel clientUpdated = clientOp.get();
             clientUpdated.setName(newData.getName());
             clientUpdated.setLastname(newData.getLastname());
             clientUpdated.setDoc(newData.getDoc());
             return  this.clientRepository.save(clientUpdated);
         }
-    }
+    //}
 
     public String deleteById(Integer id) throws Exception{
-        if (id <= 0){
-            throw new Exception("the id is not valid");
-        }
+        this.CheckId(id);
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
-        if (clientOp.isEmpty()) {
-            throw new ClientNotFoundException("client not found with this id");
-        }
+        this.ClientIsEmpty(clientOp,"client not found with this id");
          this.clientRepository.deleteById(id);
          return "Cliente Eliminado";
     }
@@ -91,6 +78,12 @@ public class ClientService {
     public void ClientIsEmpty(Optional clientOp, String message) throws ClientNotFoundException {
         if (clientOp.isEmpty()){
             throw new ClientNotFoundException(message);
+        }
+    }
+
+    public void CheckId(Integer id) throws Exception{
+        if (id <= 0){
+            throw new Exception("the id is not valid");
         }
     }
 
