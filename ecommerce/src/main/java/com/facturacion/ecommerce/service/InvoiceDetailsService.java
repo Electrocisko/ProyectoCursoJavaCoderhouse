@@ -17,8 +17,14 @@ public class InvoiceDetailsService {
     private InvoiceDetailsRepository invoiceDetailsRepository;
 
     public InvoiceDetailsModel create(InvoiceDetailsModel newDetails) {
+
+        System.out.println(newDetails);
         return this.invoiceDetailsRepository.save(newDetails);
     }
+
+
+
+
 
     public List<InvoiceDetailsModel>  findAll() {
         return  this.invoiceDetailsRepository.findAll();

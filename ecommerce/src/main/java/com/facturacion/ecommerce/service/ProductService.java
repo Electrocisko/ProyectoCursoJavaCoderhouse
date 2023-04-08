@@ -2,7 +2,6 @@ package com.facturacion.ecommerce.service;
 
 import com.facturacion.ecommerce.exception.ProductAlreadyExistsException;
 import com.facturacion.ecommerce.exception.ProductNotFoundException;
-import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.persistence.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,31 +18,21 @@ public class ProductService {
 
     public ProductModel create(ProductModel newProduct) throws ProductAlreadyExistsException {
         Optional<ProductModel> productOp = this.productRepository.findByCode(newProduct.getCode());
-        if (productOp.isPresent()) {
-            throw new ProductAlreadyExistsException("The product you are trying to add already exists in the database    ");
-        }
+        this.isPresent(productOp);
         return this.productRepository.save(newProduct);
     }
 
     public ProductModel findById(Integer id) throws Exception {
-        if (id <= 0){
-            throw new Exception("the id is not valid");
-        }
+        this.checkId(id);
         Optional<ProductModel> productOp = this.productRepository.findById(id);
-        if (productOp.isEmpty()){
-            throw new ProductNotFoundException("The product you are trying to request does not exist");
-        }else {
-            return productOp.get();
-        }
+        this.isEmpty(productOp);
+        return productOp.get();
     }
 
     public ProductModel findByCode(String code) throws ProductNotFoundException{
         Optional<ProductModel> productOp = this.productRepository.findByCode(code);
-        if (productOp.isEmpty()){
-            throw new ProductNotFoundException("The product you are trying to request does not exist");
-        }else {
-            return productOp.get();
-        }
+        this.isEmpty(productOp);
+        return productOp.get();
     }
 
     public List<ProductModel> findAll() {
@@ -51,9 +40,7 @@ public class ProductService {
     }
 
     public ProductModel update(ProductModel newData, Integer id) throws Exception{
-        if (id <= 0){
-            throw new Exception("the id is not valid");
-        }
+        this.checkId(id);
     Optional<ProductModel> productOp = this.productRepository.findById(id);
         if (productOp.isEmpty()) {
             throw new ProductNotFoundException("The product you are trying to request does not exist");
@@ -76,17 +63,31 @@ public class ProductService {
     }
 
     public String deleteById(Integer id) throws Exception {
-        if (id <= 0){
-            throw new Exception("the id is not valid");
-        }
+        this.checkId(id);
         Optional<ProductModel> productOp = this.productRepository.findById(id);
         if (productOp.isEmpty()){
             throw new ProductNotFoundException("The product you are trying to request does not exist");
         }
         this.productRepository.deleteById(id);
         return "Producto Eliminado";
-
     }
 
+    public void checkId(Integer id) throws Exception {
+        if (id <= 0){
+            throw new Exception("the id is not valid");
+        }
+    }
 
+    public void isPresent(Optional productOp) throws ProductAlreadyExistsException {
+        if (productOp.isPresent()) {
+            throw new ProductAlreadyExistsException("The product you are trying to add already exists in the database    ");
+        }
+    }
+
+    public void isEmpty(Optional productOp) throws ProductNotFoundException {
+        if (productOp.isEmpty()){
+            throw new ProductNotFoundException("The product you are trying to request does not exist");
+        }
+
+    }
 }
