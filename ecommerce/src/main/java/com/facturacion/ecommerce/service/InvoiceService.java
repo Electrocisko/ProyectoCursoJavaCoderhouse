@@ -1,22 +1,29 @@
 package com.facturacion.ecommerce.service;
 
 import com.facturacion.ecommerce.exception.InvoiceNotFoundException;
+import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceModel;
+import com.facturacion.ecommerce.persistence.repository.ClientRepository;
 import com.facturacion.ecommerce.persistence.repository.InvoiceRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class InvoiceService {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+    @Autowired
+    private ClientRepository clientRepository;
 
     public InvoiceModel create(InvoiceModel newInvoice) {
-        return this.invoiceRepository.save(newInvoice);
+           return this.invoiceRepository.save(newInvoice);
     }
 
     public List<InvoiceModel> findAll(){
@@ -58,6 +65,22 @@ public class InvoiceService {
         this.invoiceRepository.deleteById(id);
         return "Invoice Eliminado";
     }
+
+    // Aca creo primero el invoice, con la fecha, el total en cero y el cliente.
+    public InvoiceModel createInvoice(InvoiceModel newInvoice, Integer client_id) {
+        newInvoice.setCreated(LocalDate.now());
+        newInvoice.setTotal(0);
+        // Tendria que ver si es posible obtener el cliente con el id que me mandaron por parametro
+     Optional<ClientModel> clientOp = this.clientRepository.findById(client_id);
+        log.info(String.valueOf(clientOp.isPresent()));
+        log.info("Cliente id "+ client_id);
+        log.info("NewInvoice" + String.valueOf(newInvoice));
+        newInvoice.setClient_id(clientOp.get());
+
+        return this.invoiceRepository.save(newInvoice);
+    }
+
+
 
 }
 

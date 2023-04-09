@@ -18,9 +18,10 @@ public class InvoiceDetailsController {
     private InvoiceDetailsService invoiceDetailsService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<InvoiceDetailsModel> create(@RequestBody InvoiceDetailsModel newDetails) {
+    public ResponseEntity<InvoiceDetailsModel> create(@RequestBody InvoiceDetailsModel newDetails) throws Exception {
         return new ResponseEntity<>(this.invoiceDetailsService.create(newDetails), HttpStatus.CREATED );
     }
+
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<InvoiceDetailsModel>> findAll() {

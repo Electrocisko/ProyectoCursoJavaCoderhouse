@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.controller;
 
+import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceModel;
 import com.facturacion.ecommerce.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ public class InvoiceController {
     @PostMapping(path = "/create")
     public ResponseEntity<InvoiceModel> create(@RequestBody InvoiceModel newInvoice) {
         return new ResponseEntity<>(this.invoiceService.create(newInvoice), HttpStatus.CREATED );
+    }
+    //Creo este endpoint para crear un invoice que va estar asociado a un cliente
+    @PostMapping(path = "/createInvoice/{id}")
+    public ResponseEntity<InvoiceModel> createInvoice(@RequestBody InvoiceModel newInvoice,@PathVariable Integer id) {
+        return new ResponseEntity<>(this.invoiceService.createInvoice(newInvoice,id), HttpStatus.CREATED );
     }
 
     @GetMapping(path = "/all")
@@ -40,5 +46,6 @@ public class InvoiceController {
     public ResponseEntity<String> deleteById(@PathVariable Integer id) throws Exception {
         return new ResponseEntity<>(this.invoiceService.deleteById(id), HttpStatus.OK);
     }
+
 
 }
