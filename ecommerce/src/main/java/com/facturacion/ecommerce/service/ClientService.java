@@ -64,7 +64,8 @@ public class ClientService {
         this.CheckId(id);
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
         this.ClientIsEmpty(clientOp,"client not found with this id");
-         this.clientRepository.deleteById(id);
+        clientOp.get().setActive(false);
+        this.clientRepository.save(clientOp.get());
          return "Cliente Eliminado";
     }
 

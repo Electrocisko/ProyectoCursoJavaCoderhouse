@@ -2,7 +2,8 @@ CREATE TABLE clients(
 id Integer PRIMARY KEY AUTO_INCREMENT,
 name varchar(75) NOT NULL,
 lastname varchar(75) NOT NULL,
-doc varchar(11) UNIQUE NOT NULL
+doc varchar(11) UNIQUE NOT NULL,
+active boolean DEFAULT true
 );
 
 CREATE TABLE invoice(

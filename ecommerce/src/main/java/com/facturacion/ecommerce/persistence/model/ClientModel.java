@@ -21,6 +21,8 @@ public class ClientModel {
 
     private String doc;
 
+    private Boolean active = true;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "client_id", cascade = CascadeType.ALL)
     private List<InvoiceModel> invoiceModel;
