@@ -74,12 +74,8 @@ public class InvoiceService {
         // Tendria que ver si es posible obtener el cliente con el id que me mandaron por parametro
      Optional<ClientModel> clientOp = this.clientRepository.findById(client_id);
         newInvoice.setClient_id(clientOp.get());
-        log.info(String.valueOf(clientOp.isPresent()));
-        log.info("Cliente id "+ client_id);
-        log.info("NewInvoice" + String.valueOf(newInvoice));
         return this.invoiceRepository.save(newInvoice);
     }
-
 }
 
 

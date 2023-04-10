@@ -1,10 +1,13 @@
 package com.facturacion.ecommerce.service;
 
 import com.facturacion.ecommerce.exception.InvoiceNotFoundException;
+import com.facturacion.ecommerce.exception.ProductNotFoundException;
 import com.facturacion.ecommerce.persistence.model.InvoiceDetailsModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceModel;
+import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.persistence.repository.InvoiceDetailsRepository;
 import com.facturacion.ecommerce.persistence.repository.InvoiceRepository;
+import com.facturacion.ecommerce.persistence.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -24,16 +27,41 @@ public class InvoiceDetailsService {
 
     @Autowired
     private InvoiceDetailsRepository invoiceDetailsRepository;
-
-
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
 
     public InvoiceDetailsModel create(InvoiceDetailsModel newDetails) throws Exception {
 
+        Integer invoice_id = newDetails.getInvoiceModel().getId();
+        Integer product_id = newDetails.getProductModel().getId();
+
+        Optional<InvoiceModel> invoiceOp = this.invoiceRepository.findById(invoice_id);
+        if (invoiceOp.isEmpty()) {
+            throw new InvoiceNotFoundException("the invoice with that id does not exist");
+        }
+        Optional<ProductModel> productOp = this.productRepository.findById(product_id);
+        if (productOp.isEmpty()) {
+            throw new ProductNotFoundException("Product not found");
+        }
+        InvoiceModel currentInvoice = invoiceOp.get();
+        ProductModel productToBuy = productOp.get();
+
+        Integer stock = productToBuy.getStock();
+        if ( stock < newDetails.getAmount()) {
+            throw new Exception("No hay stock suficiente");
+        }
+        newDetails.setSubTotal((productToBuy.getPrice())*newDetails.getAmount());
+        productToBuy.setStock(stock-newDetails.getAmount());
+        this.productRepository.save(productToBuy);
+
+
+
+
+
        return this.invoiceDetailsRepository.save(newDetails);
     }
-
-
-
 
 
     public List<InvoiceDetailsModel>  findAll() {
@@ -63,7 +91,7 @@ public class InvoiceDetailsService {
         detailsUpdated.setInvoiceModel(newData.getInvoiceModel());
         detailsUpdated.setProductModel(newData.getProductModel());
         detailsUpdated.setAmount(newData.getAmount());
-        detailsUpdated.setPrice(newData.getPrice());
+        detailsUpdated.setSubTotal(newData.getSubTotal());
         return this.invoiceDetailsRepository.save(detailsUpdated);
     }
 

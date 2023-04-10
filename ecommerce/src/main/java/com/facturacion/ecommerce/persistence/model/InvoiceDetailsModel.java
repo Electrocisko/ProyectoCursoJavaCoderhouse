@@ -25,8 +25,10 @@ public class InvoiceDetailsModel {
 
     private int amount;
 
-    private double price;
+    @Column(name = "price")
+    private double subTotal;
 
 
 }
+
 

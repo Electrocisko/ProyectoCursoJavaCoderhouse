@@ -12,3 +12,4 @@ VALUES
 ('Short','SHT',8,5000),
 ('Gorro','GOR',20,3000);
 
+

@@ -9,10 +9,54 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+
 @Entity
 @Table(name = "invoice")
 public class InvoiceModel {
+
+    public InvoiceModel() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public ClientModel getClient_id() {
+        return client_id;
+    }
+
+    public void setClient_id(ClientModel client_id) {
+        this.client_id = client_id;
+    }
+
+    public LocalDate getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDate created) {
+        this.created = created;
+    }
+
+    public List<InvoiceDetailsModel> getInvoiceDetails() {
+        return invoiceDetails;
+    }
+
+    public void setInvoiceDetails(List<InvoiceDetailsModel> invoiceDetails) {
+        this.invoiceDetails = invoiceDetails;
+    }
+
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
