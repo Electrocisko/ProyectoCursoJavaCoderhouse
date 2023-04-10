@@ -10,16 +10,10 @@ import com.facturacion.ecommerce.persistence.repository.InvoiceRepository;
 import com.facturacion.ecommerce.persistence.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+
 
 @Slf4j
 @Service
@@ -45,6 +39,7 @@ public class InvoiceDetailsService {
         if (productOp.isEmpty()) {
             throw new ProductNotFoundException("Product not found");
         }
+
         InvoiceModel currentInvoice = invoiceOp.get();
         ProductModel productToBuy = productOp.get();
 
@@ -55,10 +50,21 @@ public class InvoiceDetailsService {
         newDetails.setSubTotal((productToBuy.getPrice())*newDetails.getAmount());
         productToBuy.setStock(stock-newDetails.getAmount());
         this.productRepository.save(productToBuy);
+        //Obtengo la lista de invoice details
+        List<InvoiceDetailsModel> detailsList = currentInvoice.getInvoiceDetails();
+        //Agrego a esa lista el detail actual
+        detailsList.add(newDetails);
+        //Actualizo la lista en el invoice actual
+        currentInvoice.setInvoiceDetails(detailsList);
 
-
-
-
+        //Declaro una variable acumulador
+        double accumulator = 0;
+        //Recorro la lista y voy sumando los subtotales de cada invoice details
+        for (InvoiceDetailsModel item : detailsList) {
+            accumulator = accumulator + item.getSubTotal();
+        }
+        //Actualizo en el invoice la sumatoria de todos los invoice details
+        currentInvoice.setTotal(accumulator);
 
        return this.invoiceDetailsRepository.save(newDetails);
     }

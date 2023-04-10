@@ -49,13 +49,18 @@ public class InvoiceModel {
         this.invoiceDetails = invoiceDetails;
     }
 
-
     public double getTotal() {
         return total;
     }
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    @Override
+    public String toString() {
+        return "InvoiceModel{" +
+                "id=" + id + ", total=" + total + '}';
     }
 
     @Id
