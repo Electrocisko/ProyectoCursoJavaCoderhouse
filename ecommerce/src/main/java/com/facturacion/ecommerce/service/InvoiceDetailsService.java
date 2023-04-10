@@ -109,7 +109,8 @@ public class InvoiceDetailsService {
         if (invoiceDetailOp.isEmpty()) {
             throw new InvoiceNotFoundException("invoice detail not found with this id");
         }
-        this.invoiceDetailsRepository.deleteById(id);
-        return "Invoice details eliminado";
+        //Dejeo el borrar comentado, eso solo por utilizacion dictica
+        //this.invoiceDetailsRepository.deleteById(id);
+        return "Invoice details they cannot be deleted. This is just a teaching sample ";
     }
 }

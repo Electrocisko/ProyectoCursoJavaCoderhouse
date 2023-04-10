@@ -19,7 +19,8 @@ id Integer PRIMARY KEY AUTO_INCREMENT,
 description varchar(150),
 code varchar(50) UNIQUE NOT NULL,
 stock Integer,
-price double
+price double,
+active boolean DEFAULT true
 );
 
 CREATE TABLE invoice_details(

@@ -62,8 +62,9 @@ public class InvoiceService {
         if (invoiceOp.isEmpty()) {
             throw new InvoiceNotFoundException("invoice not found with this id");
         }
-        this.invoiceRepository.deleteById(id);
-        return "Invoice Eliminado";
+        //Se dejo esto con fines didacticos nomas
+        //this.invoiceRepository.deleteById(id);
+        return "Invoice cannot be deleted. This is just a sample";
     }
 
     // Aca creo primero el invoice, con la fecha, el total en cero y el cliente.

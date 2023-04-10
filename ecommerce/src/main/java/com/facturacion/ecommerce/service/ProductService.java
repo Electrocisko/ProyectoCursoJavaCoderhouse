@@ -68,7 +68,9 @@ public class ProductService {
         if (productOp.isEmpty()){
             throw new ProductNotFoundException("The product you are trying to request does not exist");
         }
-        this.productRepository.deleteById(id);
+        //Cambio el estado de activo a false y actualizo el producto
+        productOp.get().setActive(false);
+        this.productRepository.save(productOp.get());
         return "Producto Eliminado";
     }
 

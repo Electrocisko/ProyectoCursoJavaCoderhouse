@@ -18,4 +18,6 @@ public class ProductModel {
     private int stock;
 
     private double price;
+
+    private boolean active = true;
 }
