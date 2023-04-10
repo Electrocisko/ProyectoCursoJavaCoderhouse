@@ -67,20 +67,18 @@ public class InvoiceService {
     }
 
     // Aca creo primero el invoice, con la fecha, el total en cero y el cliente.
-    public InvoiceModel createInvoice(InvoiceModel newInvoice, Integer client_id) {
+    public InvoiceModel createInvoice( Integer client_id) {
+        InvoiceModel newInvoice = new InvoiceModel();
         newInvoice.setCreated(LocalDate.now());
         newInvoice.setTotal(0);
         // Tendria que ver si es posible obtener el cliente con el id que me mandaron por parametro
      Optional<ClientModel> clientOp = this.clientRepository.findById(client_id);
+        newInvoice.setClient_id(clientOp.get());
         log.info(String.valueOf(clientOp.isPresent()));
         log.info("Cliente id "+ client_id);
         log.info("NewInvoice" + String.valueOf(newInvoice));
-        newInvoice.setClient_id(clientOp.get());
-
         return this.invoiceRepository.save(newInvoice);
     }
-
-
 
 }
 

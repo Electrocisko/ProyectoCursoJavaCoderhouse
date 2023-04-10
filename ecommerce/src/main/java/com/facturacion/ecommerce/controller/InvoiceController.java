@@ -23,8 +23,8 @@ public class InvoiceController {
     }
     //Creo este endpoint para crear un invoice que va estar asociado a un cliente
     @PostMapping(path = "/createInvoice/{id}")
-    public ResponseEntity<InvoiceModel> createInvoice(@RequestBody InvoiceModel newInvoice,@PathVariable Integer id) {
-        return new ResponseEntity<>(this.invoiceService.createInvoice(newInvoice,id), HttpStatus.CREATED );
+    public ResponseEntity<InvoiceModel> createInvoice(@PathVariable Integer id) {
+        return new ResponseEntity<>(this.invoiceService.createInvoice(id), HttpStatus.CREATED );
     }
 
     @GetMapping(path = "/all")
