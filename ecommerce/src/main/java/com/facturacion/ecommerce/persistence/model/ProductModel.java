@@ -12,12 +12,8 @@ public class ProductModel {
     private int id;
 
     private String description;
-
     private String code;
-
     private int stock;
-
     private double price;
-
     private boolean active = true;
 }

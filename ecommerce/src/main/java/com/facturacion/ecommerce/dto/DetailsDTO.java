@@ -7,6 +7,16 @@ public class DetailsDTO {
     Double price;
     Double subTotal;
 
+    @Override
+    public String toString() {
+        return "DetailsDTO{" +
+                "product='" + product + '\'' +
+                ", amount=" + amount +
+                ", price=" + price +
+                ", subTotal=" + subTotal +
+                '}';
+    }
+
     public String getProduct() {
         return product;
     }

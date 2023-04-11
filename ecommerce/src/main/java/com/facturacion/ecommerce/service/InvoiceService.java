@@ -43,30 +43,26 @@ public class InvoiceService {
            throw new InvoiceNotFoundException("invoice not found with this id");
         }
         InvoiceModel invoice = invoiceOp.get();
+        //Creo un InvoiceDTO para cargar los datos que quiero que se muestren
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         invoiceDTO.setId(invoice.getId());
         invoiceDTO.setClient_id(invoice.getClient_id().getId());
         invoiceDTO.setClientName(invoice.getClient_id().getName() + " " + invoice.getClient_id().getLastname());
         invoiceDTO.setTotal(invoice.getTotal());
-        //////////////////////////////////////////////////////////////
-        //DetailsDTO detailsDTO = new DetailsDTO();
-        //List<InvoiceDetailsModel> productList = new ArrayList<>();
-
-
-
-        List<String> products = new ArrayList<>();
-
+        // Creo una lista del tipo detailsDTO, para incluirlo despues InvoiceDTO
+        List<DetailsDTO> products = new ArrayList<>();
+        // Recorro el invoices details original, para crear nuevos detailsDTO e incluirlos en el listado
         for (InvoiceDetailsModel item : invoice.getInvoiceDetails()) {
-           // detailsDTO.setProduct(item.getProductModel().getDescription());
-            //productList.add(item);
-            products.add("Producto: " + item.getProductModel().getDescription() + " Precio c/u: $" +
-                    item.getProductModel().getPrice() + " Cantidad: " +
-                    item.getAmount() + " SubTotal: " +  item.getSubTotal());
+            DetailsDTO detailsDTO = new DetailsDTO();
+            detailsDTO.setProduct(item.getProductModel().getDescription());
+            detailsDTO.setAmount(item.getAmount());
+            detailsDTO.setPrice(item.getProductModel().getPrice());
+            detailsDTO.setSubTotal(item.getSubTotal());
+            // Voy agregando cada detalle
+            products.add(detailsDTO);
         }
-        //invoiceDTO.setProducts(productList);
+        //Agrego la lista de productos ya depurados de lo que quiero mostras
         invoiceDTO.setProducts(products);
-
-        /////////////////////////////////////////////////////////////
         return invoiceDTO;
     }
 

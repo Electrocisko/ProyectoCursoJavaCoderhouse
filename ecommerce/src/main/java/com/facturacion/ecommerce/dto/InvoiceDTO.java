@@ -11,7 +11,7 @@ public class InvoiceDTO {
 
     private String clientName;
 
-    private List products = new ArrayList<>();
+    private List<DetailsDTO> products;
 
     private double total;
 
@@ -50,11 +50,11 @@ public class InvoiceDTO {
         this.clientName = clientName;
     }
 
-    public List getProducts() {
+    public List<DetailsDTO> getProducts() {
         return products;
     }
 
-    public void setProducts(List products) {
+    public void setProducts(List<DetailsDTO> products) {
         this.products = products;
     }
 
