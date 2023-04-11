@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.controller;
 
+import com.facturacion.ecommerce.dto.InvoiceDTO;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceModel;
 import com.facturacion.ecommerce.service.InvoiceService;
@@ -21,6 +22,8 @@ public class InvoiceController {
     public ResponseEntity<InvoiceModel> create(@RequestBody InvoiceModel newInvoice) {
         return new ResponseEntity<>(this.invoiceService.create(newInvoice), HttpStatus.CREATED );
     }
+
+
     //Creo este endpoint para crear un invoice que va estar asociado a un cliente
     @PostMapping(path = "/createInvoice/{id}")
     public ResponseEntity<InvoiceModel> createInvoice(@PathVariable Integer id) {
@@ -33,7 +36,7 @@ public class InvoiceController {
     }
 
     @GetMapping(path = "/get/{id}")
-        public ResponseEntity<InvoiceModel> findById(@PathVariable Integer id)  throws Exception{
+        public ResponseEntity<InvoiceDTO> findById(@PathVariable Integer id)  throws Exception{
             return new ResponseEntity<>(this.invoiceService.findById(id),HttpStatus.OK);
     }
 

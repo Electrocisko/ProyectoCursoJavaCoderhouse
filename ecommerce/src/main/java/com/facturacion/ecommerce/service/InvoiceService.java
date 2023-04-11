@@ -1,7 +1,10 @@
 package com.facturacion.ecommerce.service;
 
+import com.facturacion.ecommerce.dto.DetailsDTO;
+import com.facturacion.ecommerce.dto.InvoiceDTO;
 import com.facturacion.ecommerce.exception.InvoiceNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
+import com.facturacion.ecommerce.persistence.model.InvoiceDetailsModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceModel;
 import com.facturacion.ecommerce.persistence.repository.ClientRepository;
 import com.facturacion.ecommerce.persistence.repository.InvoiceRepository;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +34,7 @@ public class InvoiceService {
         return this.invoiceRepository.findAll();
     }
 
-    public InvoiceModel findById(Integer id) throws Exception{
+    public InvoiceDTO findById(Integer id) throws Exception{
         if(id <= 0) {
             throw new Exception("the id is not valid");
         }
@@ -38,7 +42,32 @@ public class InvoiceService {
         if (invoiceOp.isEmpty()) {
            throw new InvoiceNotFoundException("invoice not found with this id");
         }
-        return invoiceOp.get();
+        InvoiceModel invoice = invoiceOp.get();
+        InvoiceDTO invoiceDTO = new InvoiceDTO();
+        invoiceDTO.setId(invoice.getId());
+        invoiceDTO.setClient_id(invoice.getClient_id().getId());
+        invoiceDTO.setClientName(invoice.getClient_id().getName() + " " + invoice.getClient_id().getLastname());
+        invoiceDTO.setTotal(invoice.getTotal());
+        //////////////////////////////////////////////////////////////
+        //DetailsDTO detailsDTO = new DetailsDTO();
+        //List<InvoiceDetailsModel> productList = new ArrayList<>();
+
+
+
+        List<String> products = new ArrayList<>();
+
+        for (InvoiceDetailsModel item : invoice.getInvoiceDetails()) {
+           // detailsDTO.setProduct(item.getProductModel().getDescription());
+            //productList.add(item);
+            products.add("Producto: " + item.getProductModel().getDescription() + " Precio c/u: $" +
+                    item.getProductModel().getPrice() + " Cantidad: " +
+                    item.getAmount() + " SubTotal: " +  item.getSubTotal());
+        }
+        //invoiceDTO.setProducts(productList);
+        invoiceDTO.setProducts(products);
+
+        /////////////////////////////////////////////////////////////
+        return invoiceDTO;
     }
 
     public InvoiceModel update(InvoiceModel newData, Integer id) throws Exception {
