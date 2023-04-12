@@ -6,7 +6,7 @@ import com.facturacion.ecommerce.exception.InvoiceNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceDetailsModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceModel;
-import com.facturacion.ecommerce.persistence.repository.ClientRepository;
+import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.persistence.repository.InvoiceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,60 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
+    @Autowired
+    private InvoiceDetailsService invoiceDetailsService;
+    @Autowired
+    private ProductService productService;
 
-    public InvoiceModel create(InvoiceModel newInvoice) {
-           return this.invoiceRepository.save(newInvoice);
+    public InvoiceModel create(InvoiceModel newData) throws Exception {
+        InvoiceModel newInvoice = new InvoiceModel();
+        newInvoice.setCreated(LocalDate.now());
+        //Obtengo Id del cliente
+        Integer clientId = newData.getClient_id().getId();
+       //Busco al cliente
+        ClientModel clientToAdd = clientService.findById(clientId); //VALIDACIONES DE CLIENTE???
+        newInvoice.setClient_id(clientToAdd);
+
+        // Obtengo la invoiceDetails que tendria que adjuntar al invoice.
+        List<InvoiceDetailsModel> invoiceDetails = newData.getInvoiceDetails();
+        // Ahora tendria que hacer un recorrido para hacer validaciones de cada producto.
+
+        //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
+        //ANTES HACER TODAS LAS VALIDACIONES!!!!!
+        InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
+        List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
+
+        for (InvoiceDetailsModel invoiceDetail: invoiceDetails
+             ) {
+            ProductModel productToAdd = productService.findById(invoiceDetail.getProductModel().getId());
+            // Voy creando un nuevo detail y le agrego los datos que necesito
+            InvoiceDetailsModel newDetail = new InvoiceDetailsModel();
+            newDetail.setProductModel(productToAdd);
+            newDetail.setAmount(invoiceDetail.getAmount());
+            newDetail.setInvoiceModel(invoiceSaved);
+            // Creo la lista y voy agregando cada detail fuera del ciclo agrego la lista al invoice
+            InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
+            detailsToAdd.add(newDetailToAdd);
+        }
+        // Ahora tengo que actualizar el total del invoice segun los details nuevos.
+        newInvoice.setInvoiceDetails(detailsToAdd);
+
+        double totalPrice = 0;
+
+        for (InvoiceDetailsModel item: detailsToAdd
+             ) {
+            System.out.println("Cantidad" + item.getAmount() + " Producto: " + item.getProductModel().getDescription() +
+                    " Precio " + item.getProductModel().getPrice());
+            totalPrice = totalPrice + (item.getAmount() * item.getProductModel().getPrice());
+        }
+       newInvoice.setTotal(totalPrice);
+
+        invoiceSaved = this.invoiceRepository.save(newInvoice);
+           return invoiceSaved;
     }
+
+
 
     public List<InvoiceModel> findAll(){
         return this.invoiceRepository.findAll();
@@ -93,15 +142,15 @@ public class InvoiceService {
     }
 
     // Aca creo primero el invoice, con la fecha, el total en cero y el cliente.
-    public InvoiceModel createInvoice( Integer client_id) {
-        InvoiceModel newInvoice = new InvoiceModel();
-        newInvoice.setCreated(LocalDate.now());
-        newInvoice.setTotal(0);
-        // Tendria que ver si es posible obtener el cliente con el id que me mandaron por parametro
-     Optional<ClientModel> clientOp = this.clientRepository.findById(client_id);
-        newInvoice.setClient_id(clientOp.get());
-        return this.invoiceRepository.save(newInvoice);
-    }
+//    public InvoiceModel createInvoice( Integer client_id) {
+//        InvoiceModel newInvoice = new InvoiceModel();
+//        newInvoice.setCreated(LocalDate.now());
+//        newInvoice.setTotal(0);
+//        // Tendria que ver si es posible obtener el cliente con el id que me mandaron por parametro
+//     Optional<ClientModel> clientOp = this.clientRepository.findById(client_id);
+//        newInvoice.setClient_id(clientOp.get());
+//        return this.invoiceRepository.save(newInvoice);
+//    }
 }
 
 

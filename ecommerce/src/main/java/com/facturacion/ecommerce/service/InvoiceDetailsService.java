@@ -28,44 +28,6 @@ public class InvoiceDetailsService {
 
     public InvoiceDetailsModel create(InvoiceDetailsModel newDetails) throws Exception {
 
-        Integer invoice_id = newDetails.getInvoiceModel().getId();
-        Integer product_id = newDetails.getProductModel().getId();
-
-        Optional<InvoiceModel> invoiceOp = this.invoiceRepository.findById(invoice_id);
-        if (invoiceOp.isEmpty()) {
-            throw new InvoiceNotFoundException("the invoice with that id does not exist");
-        }
-        Optional<ProductModel> productOp = this.productRepository.findById(product_id);
-        if (productOp.isEmpty()) {
-            throw new ProductNotFoundException("Product not found");
-        }
-
-        InvoiceModel currentInvoice = invoiceOp.get();
-        ProductModel productToBuy = productOp.get();
-
-        Integer stock = productToBuy.getStock();
-        if ( stock < newDetails.getAmount()) {
-            throw new Exception("No hay stock suficiente");
-        }
-        newDetails.setSubTotal((productToBuy.getPrice())*newDetails.getAmount());
-        productToBuy.setStock(stock-newDetails.getAmount());
-        this.productRepository.save(productToBuy);
-        //Obtengo la lista de invoice details
-        List<InvoiceDetailsModel> detailsList = currentInvoice.getInvoiceDetails();
-        //Agrego a esa lista el detail actual
-        detailsList.add(newDetails);
-        //Actualizo la lista en el invoice actual
-        currentInvoice.setInvoiceDetails(detailsList);
-
-        //Declaro una variable acumulador
-        double accumulator = 0;
-        //Recorro la lista y voy sumando los subtotales de cada invoice details
-        for (InvoiceDetailsModel item : detailsList) {
-            accumulator = accumulator + item.getSubTotal();
-        }
-        //Actualizo en el invoice la sumatoria de todos los invoice details
-        currentInvoice.setTotal(accumulator);
-
        return this.invoiceDetailsRepository.save(newDetails);
     }
 

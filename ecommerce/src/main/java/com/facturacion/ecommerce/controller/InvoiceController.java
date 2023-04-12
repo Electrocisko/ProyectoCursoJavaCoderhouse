@@ -19,16 +19,16 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<InvoiceModel> create(@RequestBody InvoiceModel newInvoice) {
+    public ResponseEntity<InvoiceModel> create(@RequestBody InvoiceModel newInvoice) throws Exception{
         return new ResponseEntity<>(this.invoiceService.create(newInvoice), HttpStatus.CREATED );
     }
 
 
     //Creo este endpoint para crear un invoice que va estar asociado a un cliente
-    @PostMapping(path = "/createInvoice/{id}")
-    public ResponseEntity<InvoiceModel> createInvoice(@PathVariable Integer id) {
-        return new ResponseEntity<>(this.invoiceService.createInvoice(id), HttpStatus.CREATED );
-    }
+//    @PostMapping(path = "/createInvoice/{id}")
+//    public ResponseEntity<InvoiceModel> createInvoice(@PathVariable Integer id) {
+//        return new ResponseEntity<>(this.invoiceService.createInvoice(id), HttpStatus.CREATED );
+//    }
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<InvoiceModel>> findAll() {
