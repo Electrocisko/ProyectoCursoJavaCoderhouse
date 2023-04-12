@@ -4,6 +4,7 @@ import com.facturacion.ecommerce.exception.ProductAlreadyExistsException;
 import com.facturacion.ecommerce.exception.ProductNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.persistence.repository.ProductRepository;
+import com.facturacion.ecommerce.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,10 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public ProductModel create(ProductModel newProduct) throws ProductAlreadyExistsException {
+    public ProductModel create(ProductModel newProduct) throws ProductAlreadyExistsException, IllegalArgumentException {
         Optional<ProductModel> productOp = this.productRepository.findByCode(newProduct.getCode());
         this.isPresent(productOp);
+        ProductValidator.validate(newProduct);
         return this.productRepository.save(newProduct);
     }
 
@@ -91,5 +93,9 @@ public class ProductService {
             throw new ProductNotFoundException("The product you are trying to request does not exist  ID: " + data );
         }
 
+    }
+
+    public void isActive(Optional productOp)  {
+        System.out.println("Esta activo??????");
     }
 }
