@@ -17,7 +17,17 @@ public class InvoiceDetailsService {
     @Autowired
     private InvoiceDetailsRepository invoiceDetailsRepository;
 
+    @Autowired
+    private ProductService productService;
+
     public InvoiceDetailsModel create(InvoiceDetailsModel newDetails) throws Exception {
+
+        Integer stock = newDetails.getProductModel().getStock();
+        Integer amountToAdd = newDetails.getAmount();
+        if (amountToAdd > stock) {
+            throw new Exception("Insufficient stock in product ID=" + newDetails.getProductModel().getId());
+        }
+
        return this.invoiceDetailsRepository.save(newDetails);
     }
 

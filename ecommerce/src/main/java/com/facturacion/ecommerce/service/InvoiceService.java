@@ -56,6 +56,7 @@ public class InvoiceService {
             newDetail.setProductModel(productToAdd);
             newDetail.setAmount(invoiceDetail.getAmount());
             newDetail.setInvoiceModel(invoiceSaved);
+            newDetail.setSubTotal(invoiceDetail.getAmount() * productToAdd.getPrice());
             // Creo la lista y voy agregando cada detail fuera del ciclo agrego la lista al invoice
             InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
             detailsToAdd.add(newDetailToAdd);
@@ -67,8 +68,6 @@ public class InvoiceService {
 
         for (InvoiceDetailsModel item: detailsToAdd
              ) {
-            System.out.println("Cantidad" + item.getAmount() + " Producto: " + item.getProductModel().getDescription() +
-                    " Precio " + item.getProductModel().getPrice());
             totalPrice = totalPrice + (item.getAmount() * item.getProductModel().getPrice());
         }
        newInvoice.setTotal(totalPrice);

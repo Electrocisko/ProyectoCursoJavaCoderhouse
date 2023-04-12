@@ -48,4 +48,9 @@ public class GlobalHandlerException {
     public ResponseEntity<?> IllegalArgumentException(IllegalArgumentException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<?> InsufficientStockException(InsufficientStockException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

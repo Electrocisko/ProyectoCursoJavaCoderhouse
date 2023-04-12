@@ -25,13 +25,13 @@ public class ProductService {
     public ProductModel findById(Integer id) throws Exception {
         this.checkId(id);
         Optional<ProductModel> productOp = this.productRepository.findById(id);
-        this.isEmpty(productOp);
+        this.isEmpty(productOp, String.valueOf(id));
         return productOp.get();
     }
 
     public ProductModel findByCode(String code) throws ProductNotFoundException{
         Optional<ProductModel> productOp = this.productRepository.findByCode(code);
-        this.isEmpty(productOp);
+        this.isEmpty(productOp, code);
         return productOp.get();
     }
 
@@ -86,9 +86,9 @@ public class ProductService {
         }
     }
 
-    public void isEmpty(Optional productOp) throws ProductNotFoundException {
+    public void isEmpty(Optional productOp, String data) throws ProductNotFoundException {
         if (productOp.isEmpty()){
-            throw new ProductNotFoundException("The product you are trying to request does not exist");
+            throw new ProductNotFoundException("The product you are trying to request does not exist  ID: " + data );
         }
 
     }

@@ -66,7 +66,7 @@ public class ClientService {
         this.ClientIsEmpty(clientOp,"client not found with this id");
         clientOp.get().setActive(false);
         this.clientRepository.save(clientOp.get());
-         return "Cliente Eliminado";
+         return "client deleting logically";
     }
 
 
@@ -84,7 +84,7 @@ public class ClientService {
 
     public void CheckId(Integer id) throws Exception{
         if (id <= 0){
-            throw new Exception("the id is not valid");
+            throw new Exception("the client id is not valid");
         }
     }
 
