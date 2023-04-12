@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,18 +38,15 @@ public class InvoiceService {
        //Busco al cliente
         ClientModel clientToAdd = clientService.findById(clientId); //VALIDACIONES DE CLIENTE???
         newInvoice.setClient_id(clientToAdd);
-
-        // Obtengo la invoiceDetails que tendria que adjuntar al invoice.
-        List<InvoiceDetailsModel> invoiceDetails = newData.getInvoiceDetails();
-        // Ahora tendria que hacer un recorrido para hacer validaciones de cada producto.
-
         //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
-        //ANTES HACER TODAS LAS VALIDACIONES!!!!!
         InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
         List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
-
-        for (InvoiceDetailsModel invoiceDetail: invoiceDetails
+        // Creo un set auxiliar para mas adelante antes de guardar chequear que no alla productos repetidos en el json.
+            Set<Integer> checkIds = new HashSet<>();
+        for (InvoiceDetailsModel invoiceDetail: newData.getInvoiceDetails()
              ) {
+
+            checkIds.add(invoiceDetail.getProductModel().getId());
             ProductModel productToAdd = productService.findById(invoiceDetail.getProductModel().getId());
             // Voy creando un nuevo detail y le agrego los datos que necesito
             InvoiceDetailsModel newDetail = new InvoiceDetailsModel();
@@ -61,17 +58,18 @@ public class InvoiceService {
             InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
             detailsToAdd.add(newDetailToAdd);
         }
+        //Chequea si no se repite un producto en la lista de details, si hay elementos duplicado lanza un error
+       if(checkIds.size() != detailsToAdd.size()) {
+           throw new IllegalArgumentException("there are duplicate products in the list");
+       }
         // Ahora tengo que actualizar el total del invoice segun los details nuevos.
         newInvoice.setInvoiceDetails(detailsToAdd);
-
         double totalPrice = 0;
-
         for (InvoiceDetailsModel item: detailsToAdd
              ) {
             totalPrice = totalPrice + (item.getAmount() * item.getProductModel().getPrice());
         }
        newInvoice.setTotal(totalPrice);
-
         invoiceSaved = this.invoiceRepository.save(newInvoice);
            return invoiceSaved;
     }
@@ -111,6 +109,8 @@ public class InvoiceService {
         invoiceDTO.setProducts(products);
         return invoiceDTO;
     }
+
+
 
 }
 
