@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.service;
 
+import com.facturacion.ecommerce.dto.ClientDTO;
 import com.facturacion.ecommerce.exception.ClientAlreadyRegisteredException;
 import com.facturacion.ecommerce.exception.ClientNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,14 +29,19 @@ public class ClientService {
     return this.clientRepository.save(newClient);
     }
 
-    public List<ClientModel> findAll() {
-        return this.clientRepository.findAll();
+    public List<ClientDTO> findAll() {
+        List<ClientModel> lista = this.clientRepository.findAll();
+        lista.removeIf(item -> item.getActive()== false);
+        List<ClientDTO> listDTO =  this.returnDTO(lista);
+
+        return listDTO;
     }
 
     public ClientModel findById(Integer id) throws Exception  {
         this.CheckId(id);
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
         this.ClientIsEmpty(clientOp,"client not found with this id");
+        CheckStatus(clientOp.get());
         return clientOp.get();
     }
 
@@ -69,7 +76,6 @@ public class ClientService {
          return "client deleting logically";
     }
 
-
     public void ClientIsPresent(Optional clientOp, String message) throws ClientAlreadyRegisteredException {
         if (clientOp.isPresent()) {
             throw new ClientAlreadyRegisteredException(message);
@@ -86,6 +92,28 @@ public class ClientService {
         if (id <= 0){
             throw new Exception("the client id is not valid");
         }
+    }
+
+    public void CheckStatus(ClientModel client) throws ClientNotFoundException {
+        if(!client.getActive()){
+            throw new ClientNotFoundException("unsubscribed client");
+        }
+    }
+
+    public List<ClientDTO> returnDTO(List<ClientModel> list) {
+
+        List<ClientDTO> clientDTOList = new ArrayList<>();
+        for (ClientModel item: list
+             ) {
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setId(item.getId());
+        clientDTO.setCompleteName(item.getName() + " " + item.getLastname());
+        clientDTO.setDocument(item.getDoc());
+        clientDTO.setInvoices(item.getInvoiceModel());
+        clientDTOList.add(clientDTO);
+        }
+
+        return clientDTOList;
     }
 
 }

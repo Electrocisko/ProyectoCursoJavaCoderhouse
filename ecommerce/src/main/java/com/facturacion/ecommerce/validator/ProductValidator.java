@@ -10,7 +10,8 @@ public class ProductValidator {
             throw new IllegalArgumentException("The client is null o invalided Argument");
         }
 
-        System.out.println("Stock del producto a ingresar" + product.getStock());
+        validateStringData("description", product.getDescription());
+        validateStringData("code", product.getCode());
 
         if(product.getStock() < 0 ) {
             throw new IllegalArgumentException("stock cannot be negative");
@@ -23,13 +24,12 @@ public class ProductValidator {
        if(product.getCode().length() < 3) {
             throw new IllegalArgumentException("Code must have more than three characters");
         }
-        validateStringData("description", product.getDescription());
-        validateStringData("code", product.getCode());
+
     }
 
     private static void validateStringData(String attribute, String stringData) {
         if(stringData.isBlank()) {
-            throw new IllegalArgumentException("El campo " + attribute + " no es valido o vacio");
+            throw new IllegalArgumentException("The  attribute " + attribute + " is not valid or empty");
         }
     }
 }
