@@ -28,6 +28,9 @@ public class ProductService {
         this.checkId(id);
         Optional<ProductModel> productOp = this.productRepository.findById(id);
         this.isEmpty(productOp, String.valueOf(id));
+        if (productOp.get().isActive() == false) {
+            throw new IllegalArgumentException("Product no active in database ID=" + productOp.get().getId());
+        }
         return productOp.get();
     }
 
@@ -38,7 +41,10 @@ public class ProductService {
     }
 
     public List<ProductModel> findAll() {
-        return this.productRepository.findAll();
+        List<ProductModel> productList = this.productRepository.findAll();
+        productList.removeIf(item -> item.isActive()== false);
+
+        return productList;
     }
 
     public ProductModel update(ProductModel newData, Integer id) throws Exception{
