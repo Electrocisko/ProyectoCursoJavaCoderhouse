@@ -77,8 +77,6 @@ public class InvoiceService {
            return invoiceSaved;
     }
 
-
-
     public List<InvoiceModel> findAll(){
         return this.invoiceRepository.findAll();
     }
@@ -115,42 +113,6 @@ public class InvoiceService {
         return invoiceDTO;
     }
 
-    public InvoiceModel update(InvoiceModel newData, Integer id) throws Exception {
-        if(id <= 0) {
-            throw new Exception("the id is not valid");
-        }
-        Optional<InvoiceModel> invoiceOp = this.invoiceRepository.findById(id);
-        if (invoiceOp.isEmpty()) {
-            throw new InvoiceNotFoundException("invoice not found with this id");
-        }
-        InvoiceModel invoiceUpdated = invoiceOp.get();
-        invoiceUpdated.setTotal(newData.getTotal());
-        return invoiceUpdated;
-    }
-
-    public String deleteById(Integer id) throws Exception {
-        if(id <= 0) {
-            throw new Exception("the id is not valid");
-        }
-        Optional<InvoiceModel> invoiceOp = this.invoiceRepository.findById(id);
-        if (invoiceOp.isEmpty()) {
-            throw new InvoiceNotFoundException("invoice not found with this id");
-        }
-        //Se dejo esto con fines didacticos nomas
-        //this.invoiceRepository.deleteById(id);
-        return "Invoice cannot be deleted. This is just a sample";
-    }
-
-    // Aca creo primero el invoice, con la fecha, el total en cero y el cliente.
-//    public InvoiceModel createInvoice( Integer client_id) {
-//        InvoiceModel newInvoice = new InvoiceModel();
-//        newInvoice.setCreated(LocalDate.now());
-//        newInvoice.setTotal(0);
-//        // Tendria que ver si es posible obtener el cliente con el id que me mandaron por parametro
-//     Optional<ClientModel> clientOp = this.clientRepository.findById(client_id);
-//        newInvoice.setClient_id(clientOp.get());
-//        return this.invoiceRepository.save(newInvoice);
-//    }
 }
 
 
