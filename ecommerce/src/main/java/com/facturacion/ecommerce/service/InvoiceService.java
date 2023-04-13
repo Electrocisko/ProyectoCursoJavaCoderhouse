@@ -2,6 +2,7 @@ package com.facturacion.ecommerce.service;
 
 import com.facturacion.ecommerce.dto.DetailsDTO;
 import com.facturacion.ecommerce.dto.InvoiceDTO;
+import com.facturacion.ecommerce.exception.InvoiceDetailsNotFoundException;
 import com.facturacion.ecommerce.exception.InvoiceNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import com.facturacion.ecommerce.persistence.model.InvoiceDetailsModel;
@@ -36,6 +37,10 @@ public class InvoiceService {
        //Busco al cliente
         ClientModel clientToAdd = clientService.findById(clientId); //VALIDACIONES DE CLIENTE???
         newInvoice.setClient_id(clientToAdd);
+        // Hago una validacion para chequear que el invoice details no tenga ningun prodcuto
+        if (newData.getInvoiceDetails().size()==0) {
+            throw new InvoiceDetailsNotFoundException("the invoice detail list is empty");
+        }
         //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
         InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
         List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
