@@ -6,6 +6,15 @@ public class DetailsDTO {
     Integer amount;
     Double price;
     Double subTotal;
+    String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     @Override
     public String toString() {
@@ -14,6 +23,7 @@ public class DetailsDTO {
                 ", amount=" + amount +
                 ", price=" + price +
                 ", subTotal=" + subTotal +
+                ", code='" + code + '\'' +
                 '}';
     }
 

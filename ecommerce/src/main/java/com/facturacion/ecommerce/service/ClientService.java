@@ -4,6 +4,7 @@ import com.facturacion.ecommerce.dto.ClientDTO;
 import com.facturacion.ecommerce.exception.ClientAlreadyRegisteredException;
 import com.facturacion.ecommerce.exception.ClientNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
+import com.facturacion.ecommerce.persistence.model.InvoiceModel;
 import com.facturacion.ecommerce.persistence.repository.ClientRepository;
 import com.facturacion.ecommerce.validator.ClientValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ public class ClientService {
 
     public List<ClientDTO> findAll() {
         List<ClientModel> lista = this.clientRepository.findAll();
+        //Depuro la lista sacando los que no estan activos
         lista.removeIf(item -> item.getActive()== false);
         List<ClientDTO> listDTO =  this.returnDTO(lista);
 
@@ -109,10 +111,16 @@ public class ClientService {
         clientDTO.setId(item.getId());
         clientDTO.setCompleteName(item.getName() + " " + item.getLastname());
         clientDTO.setDocument(item.getDoc());
-        clientDTO.setInvoices(item.getInvoiceModel());
+        //Aca tengo que hacer DTO de invoices
+            List<InvoiceModel> invoicesList = item.getInvoiceModel();
+            List<Integer> idInvoicesList = new ArrayList<>();
+            for (InvoiceModel invoiceItem: invoicesList
+                 ) {
+                idInvoicesList.add(invoiceItem.getId());
+            }
+        clientDTO.setInvoicesId(idInvoicesList);
         clientDTOList.add(clientDTO);
         }
-
         return clientDTOList;
     }
 

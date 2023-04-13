@@ -1,7 +1,5 @@
 package com.facturacion.ecommerce.dto;
 
-import com.facturacion.ecommerce.persistence.model.InvoiceModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +7,7 @@ public class ClientDTO {
     private int id;
     private String completeName;
     private String document;
-    private List<InvoiceModel> invoices = new ArrayList<>();
+    private List<Integer> invoicesId = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -35,11 +33,11 @@ public class ClientDTO {
         this.document = document;
     }
 
-    public List<InvoiceModel> getInvoices() {
-        return invoices;
+    public List<Integer> getInvoicesId() {
+        return invoicesId;
     }
 
-    public void setInvoices(List<InvoiceModel> invoices) {
-        this.invoices = invoices;
+    public void setInvoicesId(List<Integer> invoicesId) {
+        this.invoicesId = invoicesId;
     }
 }

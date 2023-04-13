@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.service;
 
+import com.facturacion.ecommerce.exception.InsufficientStockException;
 import com.facturacion.ecommerce.exception.InvoiceNotFoundException;;
 import com.facturacion.ecommerce.persistence.model.InvoiceDetailsModel;
 import com.facturacion.ecommerce.persistence.repository.InvoiceDetailsRepository;
@@ -20,12 +21,12 @@ public class InvoiceDetailsService {
     @Autowired
     private ProductService productService;
 
-    public InvoiceDetailsModel create(InvoiceDetailsModel newDetails) throws Exception {
+    public InvoiceDetailsModel create(InvoiceDetailsModel newDetails) throws InsufficientStockException {
 
         Integer stock = newDetails.getProductModel().getStock();
         Integer amountToAdd = newDetails.getAmount();
         if (amountToAdd > stock) {
-            throw new Exception("Insufficient stock in product ID=" + newDetails.getProductModel().getId());
+            throw new InsufficientStockException("Insufficient stock in product ID=" + newDetails.getProductModel().getId());
         }
         newDetails.getProductModel().setStock(stock-amountToAdd);
        return this.invoiceDetailsRepository.save(newDetails);

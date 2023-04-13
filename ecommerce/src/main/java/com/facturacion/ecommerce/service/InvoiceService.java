@@ -105,6 +105,7 @@ public class InvoiceService {
             detailsDTO.setAmount(item.getAmount());
             detailsDTO.setPrice(item.getProductModel().getPrice());
             detailsDTO.setSubTotal(item.getSubTotal());
+            detailsDTO.setCode(item.getProductModel().getCode());
             // Voy agregando cada detalle
             products.add(detailsDTO);
         }
