@@ -35,9 +35,9 @@ public class InvoiceService {
         //Obtengo Id del cliente
         Integer clientId = newData.getClient_id().getId();
        //Busco al cliente
-        ClientModel clientToAdd = clientService.findById(clientId); //VALIDACIONES DE CLIENTE???
+        ClientModel clientToAdd = clientService.findById(clientId);
         newInvoice.setClient_id(clientToAdd);
-        // Hago una validacion para chequear que el invoice details no tenga ningun prodcuto
+        // Valido para que no me manden un list vacio
         if (newData.getInvoiceDetails().size()==0) {
             throw new InvoiceDetailsNotFoundException("the invoice detail list is empty");
         }
@@ -105,6 +105,7 @@ public class InvoiceService {
             detailsDTO.setAmount(item.getAmount());
             detailsDTO.setPrice(item.getProductModel().getPrice());
             detailsDTO.setSubTotal(item.getSubTotal());
+            detailsDTO.setCode(item.getProductModel().getCode());
             // Voy agregando cada detalle
             products.add(detailsDTO);
         }
