@@ -34,8 +34,7 @@ public class ClientService {
         List<ClientModel> lista = this.clientRepository.findAll();
         //Depuro la lista sacando los que no estan activos
         lista.removeIf(item -> item.getActive()== false);
-        List<ClientDTO> listDTO =  this.returnDTO(lista);
-
+        List<ClientDTO> listDTO =  this.returnListDTO(lista);
         return listDTO;
     }
 
@@ -102,7 +101,7 @@ public class ClientService {
         }
     }
 
-    public List<ClientDTO> returnDTO(List<ClientModel> list) {
+    public List<ClientDTO> returnListDTO(List<ClientModel> list) {
 
         List<ClientDTO> clientDTOList = new ArrayList<>();
         for (ClientModel item: list
@@ -124,4 +123,6 @@ public class ClientService {
         return clientDTOList;
     }
 
+
 }
+
