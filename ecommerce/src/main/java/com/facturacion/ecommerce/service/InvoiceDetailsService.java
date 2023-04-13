@@ -28,7 +28,9 @@ public class InvoiceDetailsService {
             throw new Exception("Insufficient stock in product ID=" + newDetails.getProductModel().getId());
         }
         newDetails.getProductModel().setStock(stock-amountToAdd);
-        return this.invoiceDetailsRepository.save(newDetails);
+
+       return this.invoiceDetailsRepository.save(newDetails);
+
     }
 
     public List<InvoiceDetailsModel>  findAll() {

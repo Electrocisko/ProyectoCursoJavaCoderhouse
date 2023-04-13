@@ -1,9 +1,7 @@
 package com.facturacion.ecommerce.validator;
 
-import antlr.StringUtils;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class ClientValidator {

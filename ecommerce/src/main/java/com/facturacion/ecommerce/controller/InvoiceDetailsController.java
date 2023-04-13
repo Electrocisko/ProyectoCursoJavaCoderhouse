@@ -1,7 +1,6 @@
 package com.facturacion.ecommerce.controller;
 
 import com.facturacion.ecommerce.persistence.model.InvoiceDetailsModel;
-import com.facturacion.ecommerce.persistence.model.InvoiceModel;
 import com.facturacion.ecommerce.service.InvoiceDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,18 +32,5 @@ public class InvoiceDetailsController {
             throws Exception {
         return new ResponseEntity<>(this.invoiceDetailsService.findById(id), HttpStatus.OK);
     }
-
-    @PutMapping(path = "/updated/{id}")
-    public ResponseEntity<InvoiceDetailsModel> updated(@RequestBody InvoiceDetailsModel newData, @PathVariable Integer id)
-            throws Exception{
-        return new ResponseEntity<>(this.invoiceDetailsService.updated(newData,id), HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/delete/{id}")
-    public  ResponseEntity<String> deleteById(@PathVariable Integer id)
-            throws Exception{
-        return new ResponseEntity<>(this.invoiceDetailsService.deleteById(id), HttpStatus.OK);
-    }
-
 
 }

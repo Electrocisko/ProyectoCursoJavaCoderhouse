@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.controller;
 
+import com.facturacion.ecommerce.dto.ClientDTO;
 import com.facturacion.ecommerce.exception.ClientAlreadyRegisteredException;
 import com.facturacion.ecommerce.exception.ClientNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
@@ -24,7 +25,7 @@ public class ClientController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<ClientModel>> findAll() {
+    public ResponseEntity<List<ClientDTO>> findAll() {
         return new ResponseEntity<>(this.clientService.findAll(), HttpStatus.OK);
     }
 

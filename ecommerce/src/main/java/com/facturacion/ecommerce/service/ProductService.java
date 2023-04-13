@@ -4,6 +4,7 @@ import com.facturacion.ecommerce.exception.ProductAlreadyExistsException;
 import com.facturacion.ecommerce.exception.ProductNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ProductModel;
 import com.facturacion.ecommerce.persistence.repository.ProductRepository;
+import com.facturacion.ecommerce.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,27 +17,34 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public ProductModel create(ProductModel newProduct) throws ProductAlreadyExistsException {
+    public ProductModel create(ProductModel newProduct) throws ProductAlreadyExistsException, IllegalArgumentException {
         Optional<ProductModel> productOp = this.productRepository.findByCode(newProduct.getCode());
         this.isPresent(productOp);
+        ProductValidator.validate(newProduct);
         return this.productRepository.save(newProduct);
     }
 
     public ProductModel findById(Integer id) throws Exception {
         this.checkId(id);
         Optional<ProductModel> productOp = this.productRepository.findById(id);
-        this.isEmpty(productOp);
+        this.isEmpty(productOp, String.valueOf(id));
+        if (productOp.get().isActive() == false) {
+            throw new IllegalArgumentException("Product no active in database ID=" + productOp.get().getId());
+        }
         return productOp.get();
     }
 
     public ProductModel findByCode(String code) throws ProductNotFoundException{
         Optional<ProductModel> productOp = this.productRepository.findByCode(code);
-        this.isEmpty(productOp);
+        this.isEmpty(productOp, code);
         return productOp.get();
     }
 
     public List<ProductModel> findAll() {
-        return this.productRepository.findAll();
+        List<ProductModel> productList = this.productRepository.findAll();
+        productList.removeIf(item -> item.isActive()== false);
+
+        return productList;
     }
 
     public ProductModel update(ProductModel newData, Integer id) throws Exception{
@@ -86,10 +94,14 @@ public class ProductService {
         }
     }
 
-    public void isEmpty(Optional productOp) throws ProductNotFoundException {
+    public void isEmpty(Optional productOp, String data) throws ProductNotFoundException {
         if (productOp.isEmpty()){
-            throw new ProductNotFoundException("The product you are trying to request does not exist");
+            throw new ProductNotFoundException("The product you are trying to request does not exist  ID: " + data );
         }
 
+    }
+
+    public void isActive(Optional productOp)  {
+        System.out.println("Esta activo??????");
     }
 }
