@@ -45,27 +45,28 @@ public class InvoiceService {
         InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
         List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
         // Creo un set auxiliar para mas adelante antes de guardar chequear que no alla productos repetidos en el json.
-            Set<Integer> checkIds = new HashSet<>();
+            Set<String> checkIds = new HashSet<>();
             ProductModel productToAdd = new ProductModel();
         for (InvoiceDetailsModel invoiceDetail: newData.getInvoiceDetails()
              ) {
             // Ver si me mandan por id o  por Code
             if (invoiceDetail.getProductModel().getId() != 0 && invoiceDetail.getProductModel().getCode() == null) {
-                checkIds.add(invoiceDetail.getProductModel().getId());
                 ProductModel productToAddById = productService.findById(invoiceDetail.getProductModel().getId());
+                checkIds.add(productToAddById.getCode());
                 productToAdd = productToAddById;
             }
             if (invoiceDetail.getProductModel().getId() == 0 && invoiceDetail.getProductModel().getCode() != null){
                 ProductModel productToAddByCode = productService.findByCode(invoiceDetail.getProductModel().getCode());
+                checkIds.add(productToAddByCode.getCode());
                 productToAdd = productToAddByCode;
             }
             if (invoiceDetail.getProductModel().getId() != 0 && invoiceDetail.getProductModel().getCode() != null) {
-                checkIds.add(invoiceDetail.getProductModel().getId());
                 ProductModel productToAddById = productService.findById(invoiceDetail.getProductModel().getId());
                 // Valido que el codigo y el id que mandan por front se correspondan.
                 if (!productToAddById.getCode().equals(invoiceDetail.getProductModel().getCode())){
                     throw new IllegalArgumentException("the id does not correspond to this product code");
                 }
+                checkIds.add(productToAddById.getCode());
                 productToAdd = productToAddById;
             }
             // Voy creando un nuevo detail y le agrego los datos que necesito
@@ -79,9 +80,9 @@ public class InvoiceService {
             detailsToAdd.add(newDetailToAdd);
         }
         //Chequea si no se repite un producto en la lista de details, si hay elementos duplicado lanza un error
-//       if(checkIds.size() != detailsToAdd.size()) {
-//           throw new IllegalArgumentException("there are duplicate products in the list");
-//       }
+       if(checkIds.size() != detailsToAdd.size()) {
+           throw new IllegalArgumentException("there are duplicate products in the list");
+       }
         // Ahora tengo que actualizar el total del invoice segun los details nuevos.
         newInvoice.setInvoiceDetails(detailsToAdd);
         double totalPrice = 0;
