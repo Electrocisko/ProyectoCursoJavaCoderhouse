@@ -76,7 +76,7 @@ public class InvoiceModel {
     private LocalDate created;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "invoiceModel",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "invoiceModel")
     private List<InvoiceDetailsModel> invoiceDetails;
 
     private double total;

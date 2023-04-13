@@ -2,6 +2,7 @@ package com.facturacion.ecommerce.service;
 
 import com.facturacion.ecommerce.dto.DetailsDTO;
 import com.facturacion.ecommerce.dto.InvoiceDTO;
+import com.facturacion.ecommerce.exception.InsufficientStockException;
 import com.facturacion.ecommerce.exception.InvoiceDetailsNotFoundException;
 import com.facturacion.ecommerce.exception.InvoiceNotFoundException;
 import com.facturacion.ecommerce.persistence.model.ClientModel;
@@ -37,13 +38,15 @@ public class InvoiceService {
        //Busco al cliente
         ClientModel clientToAdd = clientService.findById(clientId);
         newInvoice.setClient_id(clientToAdd);
-        // Valido para no crear una factura vacia
-        if (newData.getInvoiceDetails().size()==0) {
-            throw new InvoiceDetailsNotFoundException("the invoice detail list is empty");
-        }
+
+        // Tengo que validar todo lo que me llega de la lista de invoice details newdata.
+        this.validateInvoicesDetails(newData.getInvoiceDetails());
+
         //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
         InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
+
         List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
+
         // Creo un set auxiliar para mas adelante antes de guardar chequear que no alla productos repetidos en el json.
             Set<String> checkIds = new HashSet<>();
             ProductModel productToAdd = new ProductModel();
@@ -132,6 +135,29 @@ public class InvoiceService {
         invoiceDTO.setProducts(products);
         return invoiceDTO;
     }
+
+    public void validateInvoicesDetails  (List<InvoiceDetailsModel> newInvoicesDetailList)
+            throws Exception{
+        //Validacion de que no llegue vacio la lista
+     if (newInvoicesDetailList.size() == 0) {
+         throw new InvoiceDetailsNotFoundException("the invoice detail list is empty");
+     }
+        for (InvoiceDetailsModel newDetail: newInvoicesDetailList
+             ) {
+            this.productService.findById(newDetail.getProductModel().getId());
+            Integer amount = newDetail.getAmount();
+            Integer stock = this.productService.findById(newDetail.getProductModel().getId()).getStock();
+            if( amount > stock) {
+                throw new InsufficientStockException("Sin stock che");
+            }
+
+
+
+
+        }
+
+    }
+
 
 }
 
