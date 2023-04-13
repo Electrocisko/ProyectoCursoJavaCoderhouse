@@ -37,6 +37,9 @@ public class ProductService {
     public ProductModel findByCode(String code) throws ProductNotFoundException{
         Optional<ProductModel> productOp = this.productRepository.findByCode(code);
         this.isEmpty(productOp, code);
+        if (productOp.get().isActive() == false) {
+            throw new IllegalArgumentException("Product no active in database Code=" + productOp.get().getCode());
+        }
         return productOp.get();
     }
 
