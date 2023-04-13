@@ -64,7 +64,8 @@ public class InvoiceService {
                 ProductModel productToAddById = productService.findById(invoiceDetail.getProductModel().getId());
                 // Valido que el codigo y el id que mandan por front se correspondan.
                 if (!productToAddById.getCode().equals(invoiceDetail.getProductModel().getCode())){
-                    throw new IllegalArgumentException("the id does not correspond to this product code");
+                    throw new IllegalArgumentException("the id does not correspond to this product code " +
+                            invoiceDetail.getProductModel().getId() );
                 }
                 checkIds.add(productToAddById.getCode());
                 productToAdd = productToAddById;
@@ -131,8 +132,6 @@ public class InvoiceService {
         invoiceDTO.setProducts(products);
         return invoiceDTO;
     }
-
-
 
 }
 
