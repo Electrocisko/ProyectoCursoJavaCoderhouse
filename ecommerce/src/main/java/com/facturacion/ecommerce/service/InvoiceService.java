@@ -38,29 +38,25 @@ public class InvoiceService {
        //Busco al cliente
         ClientModel clientToAdd = clientService.findById(clientId);
         newInvoice.setClient_id(clientToAdd);
-
         // Tengo que validar todo lo que me llega de la lista de invoice details newdata.
         this.validateInvoicesDetails(newData.getInvoiceDetails());
+
 
         //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
         InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
 
         List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
 
-        // Creo un set auxiliar para mas adelante antes de guardar chequear que no alla productos repetidos en el json.
-            Set<String> checkIds = new HashSet<>();
             ProductModel productToAdd = new ProductModel();
         for (InvoiceDetailsModel invoiceDetail: newData.getInvoiceDetails()
              ) {
             // Ver si me mandan por id o  por Code
             if (invoiceDetail.getProductModel().getId() != 0 && invoiceDetail.getProductModel().getCode() == null) {
                 ProductModel productToAddById = productService.findById(invoiceDetail.getProductModel().getId());
-                checkIds.add(productToAddById.getCode());
                 productToAdd = productToAddById;
             }
             if (invoiceDetail.getProductModel().getId() == 0 && invoiceDetail.getProductModel().getCode() != null){
                 ProductModel productToAddByCode = productService.findByCode(invoiceDetail.getProductModel().getCode());
-                checkIds.add(productToAddByCode.getCode());
                 productToAdd = productToAddByCode;
             }
             if (invoiceDetail.getProductModel().getId() != 0 && invoiceDetail.getProductModel().getCode() != null) {
@@ -70,7 +66,6 @@ public class InvoiceService {
                     throw new IllegalArgumentException("the id does not correspond to this product code " +
                             invoiceDetail.getProductModel().getId() );
                 }
-                checkIds.add(productToAddById.getCode());
                 productToAdd = productToAddById;
             }
             // Voy creando un nuevo detail y le agrego los datos que necesito
@@ -83,10 +78,7 @@ public class InvoiceService {
             InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
             detailsToAdd.add(newDetailToAdd);
         }
-        //Chequea si no se repite un producto en la lista de details, si hay elementos duplicado lanza un error
-       if(checkIds.size() != detailsToAdd.size()) {
-           throw new IllegalArgumentException("there are duplicate products in the list");
-       }
+
         // Ahora tengo que actualizar el total del invoice segun los details nuevos.
         newInvoice.setInvoiceDetails(detailsToAdd);
         double totalPrice = 0;
@@ -142,19 +134,22 @@ public class InvoiceService {
      if (newInvoicesDetailList.size() == 0) {
          throw new InvoiceDetailsNotFoundException("the invoice detail list is empty");
      }
+        //Creo un hashset auxiliar para ver si hay productos en la lista repetidos
+        Set<InvoiceDetailsModel> setAux = new HashSet<>();
         for (InvoiceDetailsModel newDetail: newInvoicesDetailList
              ) {
+            //Validacion que exista el producto, si no existe el service arroja el error
             this.productService.findById(newDetail.getProductModel().getId());
-            Integer amount = newDetail.getAmount();
-            Integer stock = this.productService.findById(newDetail.getProductModel().getId()).getStock();
-            if( amount > stock) {
-                throw new InsufficientStockException("Sin stock che");
+            //Validacion de stock
+            if( newDetail.getAmount() > this.productService.findById(newDetail.getProductModel().getId()).getStock()) {
+                throw new InsufficientStockException("Insufficient stock in product ID=" + newDetail.getProductModel().getId() );
             }
-
-
-
-
+            setAux.add(newDetail);
         }
+        if(setAux.size() != newInvoicesDetailList.size()) {
+            throw new IllegalArgumentException("there are duplicate products in the list");
+        }
+
 
     }
 
