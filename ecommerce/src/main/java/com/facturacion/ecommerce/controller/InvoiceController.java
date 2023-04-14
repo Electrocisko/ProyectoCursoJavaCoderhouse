@@ -22,6 +22,11 @@ public class InvoiceController {
         return new ResponseEntity<>(this.invoiceService.createById(newInvoice), HttpStatus.CREATED );
     }
 
+    @PostMapping(path = "/createByCode")
+    public ResponseEntity<InvoiceModel> createByCode(@RequestBody InvoiceModel newInvoice) throws Exception {
+        return new ResponseEntity<>(this.invoiceService.createByCode(newInvoice),HttpStatus.OK);
+    }
+
     @GetMapping(path = "/all")
     public ResponseEntity<List<InvoiceModel>> findAll() {
         return new ResponseEntity<>(this.invoiceService.findAll(),HttpStatus.OK);

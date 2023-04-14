@@ -39,7 +39,7 @@ public class InvoiceService {
         ClientModel clientToAdd = clientService.findById(clientId);
         newInvoice.setClient_id(clientToAdd);
         // Valido los datos que llegan del front
-        this.validateInvoicesDetails(newData.getInvoiceDetails());
+        this.validateInvoicesDetailsById(newData.getInvoiceDetails());
         //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
         InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
         List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
@@ -68,6 +68,44 @@ public class InvoiceService {
        newInvoice.setTotal(totalPrice);
         invoiceSaved = this.invoiceRepository.save(newInvoice);
            return invoiceSaved;
+    }
+
+    public InvoiceModel createByCode(InvoiceModel newData) throws Exception {
+        InvoiceModel newInvoice = new InvoiceModel();
+        newInvoice.setCreated(LocalDate.now());
+        //Obtengo Id del cliente
+        String documentClient = newData.getClient_id().getDoc();
+        //Busco al cliente
+        ClientModel clientToAdd = clientService.findByDocNumber(documentClient);
+        newInvoice.setClient_id(clientToAdd);
+        // Valido los datos que llegan del front
+        this.validateInvoicesDetailsByCode(newData.getInvoiceDetails());
+        //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
+        InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
+        List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
+        for (InvoiceDetailsModel invoiceDetail: newData.getInvoiceDetails()
+        ) {
+            ProductModel productToAdd = productService.findByCode(invoiceDetail.getProductModel().getCode());
+            // Voy creando un nuevo detail y le agrego los datos que necesito
+            InvoiceDetailsModel newDetail = new InvoiceDetailsModel();
+            newDetail.setProductModel(productToAdd);
+            newDetail.setAmount(invoiceDetail.getAmount());
+            newDetail.setInvoiceModel(invoiceSaved);
+            newDetail.setSubTotal(invoiceDetail.getAmount() * productToAdd.getPrice());
+            // Creo la lista y voy agregando cada detail fuera del ciclo agrego la lista al invoice
+            InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
+            detailsToAdd.add(newDetailToAdd);
+        }
+        // Ahora tengo que actualizar el total del invoice segun los details nuevos.
+        newInvoice.setInvoiceDetails(detailsToAdd);
+        double totalPrice = 0;
+        for (InvoiceDetailsModel item: detailsToAdd
+        ) {
+            totalPrice = totalPrice + (item.getAmount() * item.getProductModel().getPrice());
+        }
+        newInvoice.setTotal(totalPrice);
+        invoiceSaved = this.invoiceRepository.save(newInvoice);
+        return invoiceSaved;
     }
 
     public List<InvoiceModel> findAll(){
@@ -107,7 +145,7 @@ public class InvoiceService {
         return invoiceDTO;
     }
 
-    public void validateInvoicesDetails  (List<InvoiceDetailsModel> newInvoicesDetailList)
+    public void validateInvoicesDetailsById(List<InvoiceDetailsModel> newInvoicesDetailList)
             throws Exception{
         //Validacion de que no llegue vacio la lista
      if (newInvoicesDetailList.size() == 0) {
@@ -127,6 +165,28 @@ public class InvoiceService {
           if(checkDuplicates.size() != newInvoicesDetailList.size())  {
               throw new IllegalArgumentException("Duplicates products in list");
           }
+    }
+
+    public void validateInvoicesDetailsByCode (List<InvoiceDetailsModel> newInvoicesDetailList)
+            throws Exception {
+        //Validacion de que no llegue vacio la lista
+        if (newInvoicesDetailList.size() == 0) {
+            throw new InvoiceDetailsNotFoundException("the invoice detail list is empty");
+        }
+        //Validaciones duplicados - stock - id
+        Set<InvoiceDetailsModel> checkDuplicates = new HashSet<>();
+        for (InvoiceDetailsModel newDetail: newInvoicesDetailList
+        ) {
+            ProductModel checkProduct = this.productService.findByCode(newDetail.getProductModel().getCode());
+            //Validacion de stock
+            if( newDetail.getAmount() > checkProduct.getStock()) {
+                throw new InsufficientStockException("Insufficient stock in product ID=" + newDetail.getProductModel().getId() );
+            }
+            checkDuplicates.add(newDetail);
+        }
+        if(checkDuplicates.size() != newInvoicesDetailList.size())  {
+            throw new IllegalArgumentException("Duplicates products in list");
+        }
     }
 }
 
