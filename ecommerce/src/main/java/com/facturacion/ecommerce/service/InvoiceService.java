@@ -38,36 +38,15 @@ public class InvoiceService {
        //Busco al cliente
         ClientModel clientToAdd = clientService.findById(clientId);
         newInvoice.setClient_id(clientToAdd);
-        // Tengo que validar todo lo que me llega de la lista de invoice details newdata.
+        // Valido los datos que llegan del front
         this.validateInvoicesDetails(newData.getInvoiceDetails());
-
-
         //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
         InvoiceModel invoiceSaved = this.invoiceRepository.save(newInvoice);
-
         List<InvoiceDetailsModel> detailsToAdd = new ArrayList<>();
 
-            ProductModel productToAdd = new ProductModel();
         for (InvoiceDetailsModel invoiceDetail: newData.getInvoiceDetails()
              ) {
-            // Ver si me mandan por id o  por Code
-            if (invoiceDetail.getProductModel().getId() != 0 && invoiceDetail.getProductModel().getCode() == null) {
-                ProductModel productToAddById = productService.findById(invoiceDetail.getProductModel().getId());
-                productToAdd = productToAddById;
-            }
-            if (invoiceDetail.getProductModel().getId() == 0 && invoiceDetail.getProductModel().getCode() != null){
-                ProductModel productToAddByCode = productService.findByCode(invoiceDetail.getProductModel().getCode());
-                productToAdd = productToAddByCode;
-            }
-            if (invoiceDetail.getProductModel().getId() != 0 && invoiceDetail.getProductModel().getCode() != null) {
-                ProductModel productToAddById = productService.findById(invoiceDetail.getProductModel().getId());
-                // Valido que el codigo y el id que mandan por front se correspondan.
-                if (!productToAddById.getCode().equals(invoiceDetail.getProductModel().getCode())){
-                    throw new IllegalArgumentException("the id does not correspond to this product code " +
-                            invoiceDetail.getProductModel().getId() );
-                }
-                productToAdd = productToAddById;
-            }
+                ProductModel productToAdd = productService.findById(invoiceDetail.getProductModel().getId());
             // Voy creando un nuevo detail y le agrego los datos que necesito
             InvoiceDetailsModel newDetail = new InvoiceDetailsModel();
             newDetail.setProductModel(productToAdd);
@@ -134,26 +113,21 @@ public class InvoiceService {
      if (newInvoicesDetailList.size() == 0) {
          throw new InvoiceDetailsNotFoundException("the invoice detail list is empty");
      }
-        //Creo un hashset auxiliar para ver si hay productos en la lista repetidos
-        Set<InvoiceDetailsModel> setAux = new HashSet<>();
-        for (InvoiceDetailsModel newDetail: newInvoicesDetailList
-             ) {
-            //Validacion que exista el producto, si no existe el service arroja el error
-            this.productService.findById(newDetail.getProductModel().getId());
+     //Validaciones duplicados - stock - id
+     Set<InvoiceDetailsModel> checkDuplicates = new HashSet<>();
+     for (InvoiceDetailsModel newDetail: newInvoicesDetailList
+        ) {
+             ProductModel checkProduct = this.productService.findById(newDetail.getProductModel().getId());
             //Validacion de stock
-            if( newDetail.getAmount() > this.productService.findById(newDetail.getProductModel().getId()).getStock()) {
-                throw new InsufficientStockException("Insufficient stock in product ID=" + newDetail.getProductModel().getId() );
-            }
-            setAux.add(newDetail);
+            if( newDetail.getAmount() > checkProduct.getStock()) {
+                    throw new InsufficientStockException("Insufficient stock in product ID=" + newDetail.getProductModel().getId() );
+                }
+            checkDuplicates.add(newDetail);
         }
-        if(setAux.size() != newInvoicesDetailList.size()) {
-            throw new IllegalArgumentException("there are duplicate products in the list");
-        }
-
-
+          if(checkDuplicates.size() != newInvoicesDetailList.size())  {
+              throw new IllegalArgumentException("Duplicates products in list");
+          }
     }
-
-
 }
 
 
