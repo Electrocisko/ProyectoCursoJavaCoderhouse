@@ -30,7 +30,7 @@ public class InvoiceService {
     @Autowired
     private ProductService productService;
 
-    public InvoiceModel create(InvoiceModel newData) throws Exception {
+    public InvoiceModel createById(InvoiceModel newData) throws Exception {
         InvoiceModel newInvoice = new InvoiceModel();
         newInvoice.setCreated(LocalDate.now());
         //Obtengo Id del cliente
