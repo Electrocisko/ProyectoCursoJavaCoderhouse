@@ -46,7 +46,7 @@ public class ClientService {
         return clientOp.get();
     }
 
-    public ClientDTO findByDocNumber(String doc) throws ClientNotFoundException {
+    public ClientDTO findByDocNumber(String doc) throws Exception {
         Optional<ClientModel> clientOp = this.clientRepository.findByDoc(doc);
         this.ClientIsEmpty(clientOp,"client not found with this document number");
         return this.returnClientDTO(clientOp.get());
@@ -67,9 +67,12 @@ public class ClientService {
             clientUpdated.setName(newData.getName());
             clientUpdated.setLastname(newData.getLastname());
             clientUpdated.setDoc(newData.getDoc());
+        if(newData.getName()==null || newData.getLastname()==null || newData.getDoc()==null) {
+            throw  new IllegalArgumentException("Missing data, complete name, lastname and doc");
+         }
             return  this.clientRepository.save(clientUpdated);
-        }
-    //}
+    }
+
 
     public String deleteById(Integer id) throws Exception{
         this.CheckId(id);
