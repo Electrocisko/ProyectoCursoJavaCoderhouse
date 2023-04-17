@@ -2,7 +2,6 @@ package com.facturacion.ecommerce.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -27,7 +26,7 @@ public class InvoiceDetailsModel {
     private int amount;
 
     @Column(name = "price")
-    private double subTotal;
+    private double price;
 
 
 }

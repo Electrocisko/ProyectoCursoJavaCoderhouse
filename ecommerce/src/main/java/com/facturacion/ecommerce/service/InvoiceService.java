@@ -52,7 +52,7 @@ public class InvoiceService {
             newDetail.setProductModel(productToAdd);
             newDetail.setAmount(invoiceDetail.getAmount());
             newDetail.setInvoiceModel(invoiceSaved);
-            newDetail.setSubTotal(invoiceDetail.getAmount() * productToAdd.getPrice());
+            newDetail.setPrice(invoiceDetail.getAmount() * productToAdd.getPrice());
             // Creo la lista y voy agregando cada detail fuera del ciclo agrego la lista al invoice
             InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
             detailsToAdd.add(newDetailToAdd);
@@ -91,7 +91,12 @@ public class InvoiceService {
             newDetail.setProductModel(productToAdd);
             newDetail.setAmount(invoiceDetail.getAmount());
             newDetail.setInvoiceModel(invoiceSaved);
-            newDetail.setSubTotal(invoiceDetail.getAmount() * productToAdd.getPrice());
+
+            ////////////MODIFICO ACA7
+            //newDetail.setSubTotal(invoiceDetail.getAmount() * productToAdd.getPrice());
+
+            newDetail.setPrice(productToAdd.getPrice());
+
             // Creo la lista y voy agregando cada detail fuera del ciclo agrego la lista al invoice
             InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
             detailsToAdd.add(newDetailToAdd);
@@ -134,8 +139,16 @@ public class InvoiceService {
             DetailsDTO detailsDTO = new DetailsDTO();
             detailsDTO.setProduct(item.getProductModel().getDescription());
             detailsDTO.setAmount(item.getAmount());
-            detailsDTO.setPrice(item.getProductModel().getPrice());
-            detailsDTO.setSubTotal(item.getSubTotal());
+
+            ////////////////////////////////////////
+
+            //detailsDTO.setPrice(item.getProductModel().getPrice());
+            detailsDTO.setSubTotal(item.getPrice() * item.getAmount());
+
+            detailsDTO.setPrice(item.getPrice());
+
+
+
             detailsDTO.setCode(item.getProductModel().getCode());
             // Voy agregando cada detalle
             products.add(detailsDTO);
