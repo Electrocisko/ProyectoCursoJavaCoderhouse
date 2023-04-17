@@ -115,9 +115,19 @@ public class InvoiceService {
 
     public List<InvoiceDTO> findAll(){
         List<InvoiceModel> invoiceModelList = this.invoiceRepository.findAll();
+        //Creo una lista invoiceDTO y le voy recorriendo para asignar los valores
         List<InvoiceDTO> invoiceDTOList = new ArrayList<>();
       for (InvoiceModel  invoiceItem : invoiceModelList) {
-          invoiceDTOList.add(this.returnInvoiceDTO(invoiceItem));
+          //Creo una lista details y le voy recorriendo para asignar los valores
+          List<DetailsDTO> detailsDTOList = new ArrayList<>();
+          for (InvoiceDetailsModel detailItem: invoiceItem.getInvoiceDetails()
+               ) {
+              detailsDTOList.add(this.returnDetailsDTO(detailItem));
+          }
+          InvoiceDTO invoiceDTO = this.returnInvoiceDTO(invoiceItem);
+          // Agrego la lista de details dto al invoice dto
+          invoiceDTO.setProducts(detailsDTOList);
+          invoiceDTOList.add(invoiceDTO);
       }
         return invoiceDTOList;
     }
@@ -207,10 +217,23 @@ public class InvoiceService {
         invoiceDTO.setClient_id(invoice.getClient_id().getId());
         invoiceDTO.setClientName(invoice.getClient_id().getName() + " " + invoice.getClient_id().getLastname());
         invoiceDTO.setTotal(invoice.getTotal());
-
       return invoiceDTO;
+    }
+
+    public DetailsDTO returnDetailsDTO(InvoiceDetailsModel detail) {
+        DetailsDTO detailsDTO = new DetailsDTO();
+        detailsDTO.setCode(detail.getProductModel().getCode());
+        detailsDTO.setProduct(detail.getProductModel().getDescription());
+        detailsDTO.setAmount(detail.getAmount());
+        detailsDTO.setPrice(detail.getPrice());
+        detailsDTO.setSubTotal(detail.getPrice() * detail.getAmount());
+
+       return detailsDTO;
+
 
     }
 }
+
+
 
 
