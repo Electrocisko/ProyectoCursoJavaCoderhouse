@@ -18,7 +18,7 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @PostMapping(path = "/createById")
-    public ResponseEntity<InvoiceModel> createById(@RequestBody InvoiceModel newInvoice) throws Exception{
+    public ResponseEntity<InvoiceDTO> createById(@RequestBody InvoiceModel newInvoice) throws Exception{
         return new ResponseEntity<>(this.invoiceService.createById(newInvoice), HttpStatus.CREATED );
     }
 

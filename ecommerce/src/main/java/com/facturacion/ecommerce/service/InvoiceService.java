@@ -30,7 +30,7 @@ public class InvoiceService {
     @Autowired
     private ProductService productService;
 
-    public InvoiceModel createById(InvoiceModel newData) throws Exception {
+    public InvoiceDTO createById(InvoiceModel newData) throws Exception {
         InvoiceModel newInvoice = new InvoiceModel();
         newInvoice.setCreated(LocalDate.now());
         //Obtengo Id del cliente
@@ -57,7 +57,6 @@ public class InvoiceService {
             InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
             detailsToAdd.add(newDetailToAdd);
         }
-
         // Ahora tengo que actualizar el total del invoice segun los details nuevos.
         newInvoice.setInvoiceDetails(detailsToAdd);
         double totalPrice = 0;
@@ -66,8 +65,17 @@ public class InvoiceService {
             totalPrice = totalPrice + (item.getAmount() * item.getProductModel().getPrice());
         }
        newInvoice.setTotal(totalPrice);
-        invoiceSaved = this.invoiceRepository.save(newInvoice);
-           return invoiceSaved;
+        this.invoiceRepository.save(newInvoice);
+        //Creo el invoiceDTO
+        InvoiceDTO invoiceDTO = this.returnInvoiceDTO(newInvoice);
+        List<DetailsDTO> products = new ArrayList<>();
+        // Recorro el invoices details original, para crear nuevos detailsDTO e incluirlos en el listado
+        for (InvoiceDetailsModel item : newInvoice.getInvoiceDetails()) {
+            products.add(this.returnDetailsDTO(item));
+        }
+        //Agrego la lista de productos ya depurados de lo que quiero mostrar
+        invoiceDTO.setProducts(products);
+        return invoiceDTO;
     }
 
     public InvoiceModel createByCode(InvoiceModel newData) throws Exception {
@@ -91,10 +99,6 @@ public class InvoiceService {
             newDetail.setProductModel(productToAdd);
             newDetail.setAmount(invoiceDetail.getAmount());
             newDetail.setInvoiceModel(invoiceSaved);
-
-            ////////////MODIFICO ACA7
-            //newDetail.setSubTotal(invoiceDetail.getAmount() * productToAdd.getPrice());
-
             newDetail.setPrice(productToAdd.getPrice());
 
             // Creo la lista y voy agregando cada detail fuera del ciclo agrego la lista al invoice
@@ -115,6 +119,9 @@ public class InvoiceService {
 
     public List<InvoiceDTO> findAll(){
         List<InvoiceModel> invoiceModelList = this.invoiceRepository.findAll();
+
+        System.out.println("Lista de invoices" + invoiceModelList);
+
         //Creo una lista invoiceDTO y le voy recorriendo para asignar los valores
         List<InvoiceDTO> invoiceDTOList = new ArrayList<>();
       for (InvoiceModel  invoiceItem : invoiceModelList) {
