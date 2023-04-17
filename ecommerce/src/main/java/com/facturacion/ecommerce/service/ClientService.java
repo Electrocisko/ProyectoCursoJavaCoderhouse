@@ -102,23 +102,10 @@ public class ClientService {
     }
 
     public List<ClientDTO> returnListDTO(List<ClientModel> list) {
-
         List<ClientDTO> clientDTOList = new ArrayList<>();
         for (ClientModel item: list
              ) {
-        ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setId(item.getId());
-        clientDTO.setCompleteName(item.getName() + " " + item.getLastname());
-        clientDTO.setDocument(item.getDoc());
-        //Aca tengo que hacer DTO de invoices
-            List<InvoiceModel> invoicesList = item.getInvoiceModel();
-            List<Integer> idInvoicesList = new ArrayList<>();
-            for (InvoiceModel invoiceItem: invoicesList
-                 ) {
-                idInvoicesList.add(invoiceItem.getId());
-            }
-        clientDTO.setInvoicesId(idInvoicesList);
-        clientDTOList.add(clientDTO);
+        clientDTOList.add(this.returnClientDTO(item));
         }
         return clientDTOList;
     }
