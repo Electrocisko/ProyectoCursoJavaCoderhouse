@@ -141,28 +141,14 @@ public class InvoiceService {
            throw new InvoiceNotFoundException("invoice not found with this id");
         }
         InvoiceModel invoice = invoiceOp.get();
-
-
-        //Creo un InvoiceDTO para cargar los datos que quiero que se muestren
-        InvoiceDTO invoiceDTO = new InvoiceDTO();
-        invoiceDTO.setId(invoice.getId());
-        invoiceDTO.setClient_id(invoice.getClient_id().getId());
-        invoiceDTO.setClientName(invoice.getClient_id().getName() + " " + invoice.getClient_id().getLastname());
-        invoiceDTO.setTotal(invoice.getTotal());
-        // Creo una lista del tipo detailsDTO, para incluirlo despues InvoiceDTO
+        // Obtengo el invoide dto
+        InvoiceDTO invoiceDTO = this.returnInvoiceDTO(invoice);
         List<DetailsDTO> products = new ArrayList<>();
         // Recorro el invoices details original, para crear nuevos detailsDTO e incluirlos en el listado
         for (InvoiceDetailsModel item : invoice.getInvoiceDetails()) {
-            DetailsDTO detailsDTO = new DetailsDTO();
-            detailsDTO.setProduct(item.getProductModel().getDescription());
-            detailsDTO.setAmount(item.getAmount());
-            detailsDTO.setSubTotal(item.getPrice() * item.getAmount());
-            detailsDTO.setPrice(item.getPrice());
-            detailsDTO.setCode(item.getProductModel().getCode());
-            // Voy agregando cada detalle
-            products.add(detailsDTO);
+            products.add(this.returnDetailsDTO(item));
         }
-        //Agrego la lista de productos ya depurados de lo que quiero mostras
+        //Agrego la lista de productos ya depurados de lo que quiero mostrar
         invoiceDTO.setProducts(products);
         return invoiceDTO;
     }
