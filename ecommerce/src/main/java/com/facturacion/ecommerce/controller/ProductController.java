@@ -43,6 +43,11 @@ public ResponseEntity<ProductModel> findByCode(@PathVariable String code) throws
     return new ResponseEntity<>(this.productService.update(productUpdate, id), HttpStatus.OK);
 }
 
+    @PutMapping(path = "/updateByCode")
+    public ResponseEntity<ProductModel> update(@RequestBody ProductModel productUpdate) throws Exception {
+        return new ResponseEntity<>(this.productService.updateByCode(productUpdate), HttpStatus.OK);
+    }
+
 @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Integer id) throws Exception {
     return new ResponseEntity<>(this.productService.deleteById(id),HttpStatus.OK);

@@ -70,6 +70,17 @@ public class ProductService {
 
     }
 
+    public ProductModel updateByCode(ProductModel newData) throws Exception{
+        Optional<ProductModel> productOp = this.productRepository.findByCode(newData.getCode());
+        if (productOp.isEmpty()) {
+            throw new ProductNotFoundException("The product you are trying to request does not exist");
+        }
+            ProductModel productUpdated = productOp.get();
+            productUpdated.setStock(newData.getStock());
+            productUpdated.setPrice(newData.getPrice());
+            return this.productRepository.save(productUpdated);
+    }
+
     public String deleteById(Integer id) throws Exception {
         this.checkId(id);
         Optional<ProductModel> productOp = this.productRepository.findById(id);
