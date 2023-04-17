@@ -28,7 +28,7 @@ public class InvoiceController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<InvoiceModel>> findAll() {
+    public ResponseEntity<List<InvoiceDTO>> findAll() {
         return new ResponseEntity<>(this.invoiceService.findAll(),HttpStatus.OK);
     }
 

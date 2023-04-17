@@ -113,8 +113,13 @@ public class InvoiceService {
         return invoiceSaved;
     }
 
-    public List<InvoiceModel> findAll(){
-        return this.invoiceRepository.findAll();
+    public List<InvoiceDTO> findAll(){
+        List<InvoiceModel> invoiceModelList = this.invoiceRepository.findAll();
+        List<InvoiceDTO> invoiceDTOList = new ArrayList<>();
+      for (InvoiceModel  invoiceItem : invoiceModelList) {
+          invoiceDTOList.add(this.returnInvoiceDTO(invoiceItem));
+      }
+        return invoiceDTOList;
     }
 
     public InvoiceDTO findById(Integer id) throws Exception{
@@ -126,6 +131,8 @@ public class InvoiceService {
            throw new InvoiceNotFoundException("invoice not found with this id");
         }
         InvoiceModel invoice = invoiceOp.get();
+
+
         //Creo un InvoiceDTO para cargar los datos que quiero que se muestren
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         invoiceDTO.setId(invoice.getId());
@@ -139,16 +146,8 @@ public class InvoiceService {
             DetailsDTO detailsDTO = new DetailsDTO();
             detailsDTO.setProduct(item.getProductModel().getDescription());
             detailsDTO.setAmount(item.getAmount());
-
-            ////////////////////////////////////////
-
-            //detailsDTO.setPrice(item.getProductModel().getPrice());
             detailsDTO.setSubTotal(item.getPrice() * item.getAmount());
-
             detailsDTO.setPrice(item.getPrice());
-
-
-
             detailsDTO.setCode(item.getProductModel().getCode());
             // Voy agregando cada detalle
             products.add(detailsDTO);
@@ -200,6 +199,17 @@ public class InvoiceService {
         if(checkDuplicates.size() != newInvoicesDetailList.size())  {
             throw new IllegalArgumentException("Duplicates products in list");
         }
+    }
+
+    public InvoiceDTO returnInvoiceDTO(InvoiceModel invoice) {
+        InvoiceDTO invoiceDTO = new InvoiceDTO();
+        invoiceDTO.setId(invoice.getId());
+        invoiceDTO.setClient_id(invoice.getClient_id().getId());
+        invoiceDTO.setClientName(invoice.getClient_id().getName() + " " + invoice.getClient_id().getLastname());
+        invoiceDTO.setTotal(invoice.getTotal());
+
+      return invoiceDTO;
+
     }
 }
 
