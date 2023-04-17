@@ -3,10 +3,11 @@ package com.facturacion.ecommerce.dto;
 public class DetailsDTO {
 
     String product;
+    String code;
     Integer amount;
     Double price;
     Double subTotal;
-    String code;
+
 
     public String getCode() {
         return code;

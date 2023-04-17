@@ -23,7 +23,7 @@ public class InvoiceController {
     }
 
     @PostMapping(path = "/createByCode")
-    public ResponseEntity<InvoiceModel> createByCode(@RequestBody InvoiceModel newInvoice) throws Exception {
+    public ResponseEntity<InvoiceDTO> createByCode(@RequestBody InvoiceModel newInvoice) throws Exception {
         return new ResponseEntity<>(this.invoiceService.createByCode(newInvoice),HttpStatus.OK);
     }
 

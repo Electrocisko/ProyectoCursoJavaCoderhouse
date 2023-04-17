@@ -79,7 +79,7 @@ public class InvoiceService {
         return invoiceDTO;
     }
 
-    public InvoiceModel createByCode(InvoiceModel newData) throws Exception {
+    public InvoiceDTO createByCode(InvoiceModel newData) throws Exception {
         InvoiceModel newInvoice = new InvoiceModel();
         newInvoice.setCreated(LocalDate.now());
         //Obtengo Id del cliente
@@ -114,8 +114,16 @@ public class InvoiceService {
             totalPrice = totalPrice + (item.getAmount() * item.getProductModel().getPrice());
         }
         newInvoice.setTotal(totalPrice);
-        invoiceSaved = this.invoiceRepository.save(newInvoice);
-        return invoiceSaved;
+        this.invoiceRepository.save(newInvoice);
+        InvoiceDTO invoiceDTO = this.returnInvoiceDTO(newInvoice);
+        List<DetailsDTO> products = new ArrayList<>();
+        // Recorro el invoices details original, para crear nuevos detailsDTO e incluirlos en el listado
+        for (InvoiceDetailsModel item : newInvoice.getInvoiceDetails()) {
+            products.add(this.returnDetailsDTO(item));
+        }
+        //Agrego la lista de productos ya depurados de lo que quiero mostrar
+        invoiceDTO.setProducts(products);
+        return invoiceDTO;
     }
 
     public List<InvoiceDTO> findAll(){
