@@ -51,8 +51,9 @@ public class InvoiceService {
             InvoiceDetailsModel newDetail = new InvoiceDetailsModel();
             newDetail.setProductModel(productToAdd);
             newDetail.setAmount(invoiceDetail.getAmount());
+            newDetail.setPrice(productToAdd.getPrice());
             newDetail.setInvoiceModel(invoiceSaved);
-            newDetail.setPrice(invoiceDetail.getAmount() * productToAdd.getPrice());
+
             // Creo la lista y voy agregando cada detail fuera del ciclo agrego la lista al invoice
             InvoiceDetailsModel newDetailToAdd = this.invoiceDetailsService.create(newDetail);
             detailsToAdd.add(newDetailToAdd);

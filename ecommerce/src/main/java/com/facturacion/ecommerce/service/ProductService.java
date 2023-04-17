@@ -62,10 +62,7 @@ public class ProductService {
                     throw new ProductAlreadyExistsException("the new code already exists in the database");
                 }
             }
-
             ProductModel productUpdated = productOp.get();
-            productUpdated.setDescription(newData.getDescription());
-            productUpdated.setCode(newData.getCode());
             productUpdated.setStock(newData.getStock());
             productUpdated.setPrice(newData.getPrice());
             return this.productRepository.save(productUpdated);
