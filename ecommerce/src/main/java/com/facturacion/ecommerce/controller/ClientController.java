@@ -35,7 +35,7 @@ public class ClientController {
     }
 
    @GetMapping(path = "/GetByDocumentNumber/{doc}")
-   public ResponseEntity<ClientModel> findByDoc(@PathVariable String doc) throws ClientNotFoundException {
+   public ResponseEntity<ClientDTO> findByDoc(@PathVariable String doc) throws ClientNotFoundException {
         return new ResponseEntity<>(this.clientService.findByDocNumber(doc),HttpStatus.OK);
    }
 

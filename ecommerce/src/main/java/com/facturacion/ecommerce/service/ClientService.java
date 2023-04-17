@@ -46,10 +46,10 @@ public class ClientService {
         return clientOp.get();
     }
 
-    public ClientModel findByDocNumber(String doc) throws ClientNotFoundException {
+    public ClientDTO findByDocNumber(String doc) throws ClientNotFoundException {
         Optional<ClientModel> clientOp = this.clientRepository.findByDoc(doc);
         this.ClientIsEmpty(clientOp,"client not found with this document number");
-        return clientOp.get();
+        return this.returnClientDTO(clientOp.get());
     }
 
     public ClientModel update(ClientModel newData, Integer id) throws Exception {
@@ -121,6 +121,22 @@ public class ClientService {
         clientDTOList.add(clientDTO);
         }
         return clientDTOList;
+    }
+
+    public ClientDTO returnClientDTO(ClientModel item) {
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setId(item.getId());
+        clientDTO.setCompleteName(item.getName() + " " + item.getLastname());
+        clientDTO.setDocument(item.getDoc());
+        //Aca tengo que hacer DTO de invoices
+        List<InvoiceModel> invoicesList = item.getInvoiceModel();
+        List<Integer> idInvoicesList = new ArrayList<>();
+        for (InvoiceModel invoiceItem: invoicesList
+        ) {
+            idInvoicesList.add(invoiceItem.getId());
+        }
+        clientDTO.setInvoicesId(idInvoicesList);
+        return  clientDTO;
     }
 
 

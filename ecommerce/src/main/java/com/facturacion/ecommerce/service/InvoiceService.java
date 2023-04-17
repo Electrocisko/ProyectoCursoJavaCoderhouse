@@ -1,5 +1,6 @@
 package com.facturacion.ecommerce.service;
 
+import com.facturacion.ecommerce.dto.ClientDTO;
 import com.facturacion.ecommerce.dto.DetailsDTO;
 import com.facturacion.ecommerce.dto.InvoiceDTO;
 import com.facturacion.ecommerce.exception.InsufficientStockException;
@@ -85,8 +86,10 @@ public class InvoiceService {
         //Obtengo Id del cliente
         String documentClient = newData.getClient_id().getDoc();
         //Busco al cliente
-        ClientModel clientToAdd = clientService.findByDocNumber(documentClient);
-        newInvoice.setClient_id(clientToAdd);
+        ClientDTO clientToAdd = clientService.findByDocNumber(documentClient);
+        clientToAdd.getId();
+        ClientModel aux = clientService.findById(clientToAdd.getId());
+        newInvoice.setClient_id(aux);
         // Valido los datos que llegan del front
         this.validateInvoicesDetailsByCode(newData.getInvoiceDetails());
         //Creo un invoiceSaved antes de retornar para obtener el id asignado al invoice recien creado
