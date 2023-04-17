@@ -234,8 +234,6 @@ public class InvoiceService {
         detailsDTO.setSubTotal(detail.getPrice() * detail.getAmount());
 
        return detailsDTO;
-
-
     }
 }
 

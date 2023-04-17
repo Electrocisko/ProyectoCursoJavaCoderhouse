@@ -14,13 +14,9 @@ public class ClientModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String name;
-
     private String lastname;
-
     private String doc;
-
     private Boolean active = true;
 
     @JsonManagedReference

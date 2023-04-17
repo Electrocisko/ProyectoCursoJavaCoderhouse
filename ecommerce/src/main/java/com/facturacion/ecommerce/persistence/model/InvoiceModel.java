@@ -14,6 +14,25 @@ import java.util.List;
 @Table(name = "invoice")
 public class InvoiceModel {
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "client_id")
+    private ClientModel client_id;
+
+    @Column(name = "created_at")
+    private LocalDate created;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "invoiceModel")
+    private List<InvoiceDetailsModel> invoiceDetails;
+
+    private double total;
+
     public InvoiceModel() {
     }
 
@@ -62,23 +81,5 @@ public class InvoiceModel {
         return "InvoiceModel{" +
                 "id=" + id + ", total=" + total + '}';
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "client_id")
-    private ClientModel client_id;
-
-    @Column(name = "created_at")
-    private LocalDate created;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "invoiceModel")
-    private List<InvoiceDetailsModel> invoiceDetails;
-
-    private double total;
 
 }

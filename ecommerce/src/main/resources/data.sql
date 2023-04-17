@@ -1,9 +1,9 @@
 insert INTO clients(name,lastname,doc)
 VALUES
-('Pedro','Garcia','1234'),
-('Pablo','Lopez','1235'),
-('Carla','Conte','1236'),
-('Marina','Bal','1237');
+('Pedro','Garcia','123456781'),
+('Pablo','Lopez','123456782'),
+('Carla','Conte','123456783'),
+('Marina','Bal','123456784');
 
 insert into products(description,code,stock,price)
 VALUES

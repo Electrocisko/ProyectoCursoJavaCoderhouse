@@ -56,10 +56,13 @@ public class ClientService {
         this.CheckId(id);
         Optional<ClientModel> clientOp = this.clientRepository.findById(id);
         this.ClientIsEmpty(clientOp,"client not found with this id");
-            Optional<ClientModel> clientDoc = this.clientRepository.findByDoc(newData.getDoc());
+        Optional<ClientModel> clientDoc = this.clientRepository.findByDoc(newData.getDoc());
+        //Validacion para que no se repita el numero de documento en la base
+        if(clientDoc.isPresent()) {
             if(!clientOp.get().getDoc().equals(newData.getDoc())) {
                 this.ClientIsPresent(clientOp,"The client is already registered whit this doc");
-          }
+            }
+        }
             ClientModel clientUpdated = clientOp.get();
             clientUpdated.setName(newData.getName());
             clientUpdated.setLastname(newData.getLastname());
